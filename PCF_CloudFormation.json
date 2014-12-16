@@ -262,7 +262,13 @@
             "sleep 60","\n",
             "curl --insecure \"https://localhost/api/users\" -d 'user[user_name]=",{ "Ref" : "OpsMgrWebUID" },"&user[password]=",{ "Ref" : "OpsMgrWebPW" },"&user[password_confirmation]=",{ "Ref" : "OpsMgrWebPW" },"' -X POST","\n",                 
             "curl --insecure \"https://localhost/api/installation_settings\" -F 'installation[file]=@/tmp/json/samplepcf.json' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
-            "curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n"
+            "curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
+            "rm -rf /tmp/runtime","\n",
+            "mkdir /tmp/runtime","\n",
+           "pushd /tmp/runtime","\n",
+           "wget https://s3.amazonaws.com/experimental-runtime-aws/ccc.zip","\n",
+           "popd","\n",
+           "curl 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ccc.zip' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k"   
         ]]}},
         "NetworkInterfaces": [
           {
