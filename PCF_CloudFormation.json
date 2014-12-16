@@ -243,6 +243,15 @@
         "InstanceType": "m3.xlarge",
         "KernelId": "aki-919dcaf8",
         "KeyName": { "Ref" : "KeyName" },
+        "BlockDeviceMappings" : [
+               {
+                  "DeviceName" : "/dev/sda1",
+                  "Ebs" : {
+                     "DeleteOnTermination" : "true",
+                     "VolumeSize" : "40"
+                  }
+               }
+            ],
         "Monitoring": "false",
         "Tags": [
           {
@@ -265,9 +274,9 @@
             "curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
             "rm -rf /tmp/runtime","\n",
             "mkdir /tmp/runtime","\n",
-           "cd /tmp/runtime","\n",
-           "wget https://s3.amazonaws.com/experimental-runtime-aws/ccc.zip","\n",
-           "curl 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ccc.zip' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k"   
+            "cd /tmp/runtime","\n",
+            "wget https://s3.amazonaws.com/experimental-runtime-aws/ccc.zip","\n",
+            "curl --insecure 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ccc.zip' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k"   
         ]]}},
         "NetworkInterfaces": [
           {
