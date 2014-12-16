@@ -2,13 +2,14 @@ PCF_AWS_CloudFormation
 ======================
 
 Setup:
+
 1. Ensure a bosh keypair doesn't already exist
 2. Create a keypair (opsmgr would be good - but doesn't have to be)
 3. Add Key to your local mac (avoids having to do ssh -i <key> everytime you connect to AWS)
-$ ssh-add ~/.ssh/your-key.pem
+  $ ssh-add ~/.ssh/your-key.pem
 3. Go to AWS CloudFormation and "Create" a new stack using the .json file in this repo
 4. Connect to your OpsManager Instance via Web/SSH
-$ ssh tempest@<PublicDNSNameOfOpsManagerInstance>
+  $ ssh tempest@<PublicDNSNameOfOpsManagerInstance>
 
 
 Use this file to:
