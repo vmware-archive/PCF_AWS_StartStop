@@ -1,0 +1,490 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+   "Parameters" : {
+
+    "AWSAccessKeyID" : {
+     "Type" : "String",
+     "Default" : "",
+     "Description" : "Enter your AWS Access Key ID"
+     },
+     "AWSSecretKey" : {
+     "Type" : "String",
+     "Default" : "",
+     "Description" : "Enter AWS Secret Key"
+     },
+    "OpsMgrWebUID" : {
+     "Type" : "String",
+     "Default" : "admin",
+     "Description" : "Ops Manager Web Username (will create) - admin is default"
+     },
+    "OpsMgrWebPW" : {
+     "Type" : "String",
+     "NoEcho": "true",
+     "Default" : "password",
+     "AllowedPattern" : "[a-zA-Z0-9]*",
+     "Description" : "Ops Manager Web Password - password is default"
+     },
+    "KeyName": {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the hosts",
+      "Type": "String",
+      "Default": "opsmgr",
+      "MinLength": "1",
+      "MaxLength": "255",
+      "AllowedPattern" : "[\\x20-\\x7E]*",
+      "ConstraintDescription" : "can contain only ASCII characters."
+    },
+    "OpsMgrAMI" : {
+     "Type" : "String",
+     "Default" : "ami-76b02a1e",
+     "Description" : "Enter Ops Manager AMI"
+    },
+    "AvailabilityZoneName" : {
+     "Type" : "String",
+     "Default" : "us-east-1d",
+     "Description" : "Enter Availability Zone Name"
+    },
+    "SecurityGroupName" : {
+     "Type" : "String",
+     "Default" : "PCFsg - Not used yet",
+     "Description" : "The name of the security group assigned to your Ops Manager Deployment"
+    
+    },
+    "NTPServerName" : {
+     "Type" : "String",
+     "Default" : "0.amazon.pool.ntp.org - Not used yet",
+     "Description" : "The DNS or IP Address to Desired NTP Server"
+    },
+    "PCFNetworkName" : {
+     "Type" : "String",
+     "Default" : "PCFNetwork - Not used yet",
+     "Description" : "The desired name of the Network defined in OpsManager"
+    },
+    "PrivateSubNetCIDRRange" : {
+     "Type" : "String",
+     "Default" : "10.0.1.0/24",
+     "Description" : "The CIDR Range of the Private Subnet"
+    },
+    "ExcludedIPRanges" : {
+     "Type" : "String",
+     "Default" : "10.0.1.1-10.0.1.10 - Not used yet",
+     "Description" : "The IP Addresses not to use"
+    },
+    "PCFDNS" : {
+     "Type" : "String",
+     "Default" : "10.0.0.2 - Not used yet",
+     "Description" : "This is the address of the desired DNS Server"
+    },
+    "PCFGateway" : {
+     "Type" : "String",
+     "Default" : "10.0.1.1 - Not used yet",
+     "Description" : "The IP Address of the internal subnet used by instances"
+    }
+
+
+  },  
+ "Outputs" : {
+   "PCFPrivateSubnet" : {
+      "Value" : { "Ref" : "PCFPrivateSubnet" },
+      "Description" : "This is the SubnetID of te Private Subnet"
+   },
+   "PCFPublicSubnet" : {
+      "Value" : { "Ref" : "PCFPublicSubnet" },
+      "Description" : "This is the SubnetID of te Public Subnet"
+   },
+   "PCFVpcId" : {
+      "Value" : { "Ref" : "PCFVPC" },
+      "Description" : "This is the VpcID of the PCF VPC"
+   }, 
+   "OpsManDNS" : {
+      "Value" : { "Fn::GetAtt": [ "OpsManagerInstance", "PublicDnsName" ] },
+      "Description" : "This is the PublicDNS Name of OpsManger"
+   }    
+ },
+  "Resources": {
+    "PCFVPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "PCF"
+          }
+        ]
+      }
+    },
+    "PCFPrivateSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": {"Ref":"PrivateSubNetCIDRRange"},
+        "AvailabilityZone": "us-east-1d",
+        "VpcId": {
+          "Ref": "PCFVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Private subnet"
+          }
+        ]
+      }
+    },
+    "PCFPublicSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/24",
+        "AvailabilityZone": "us-east-1d",
+        "VpcId": {
+          "Ref": "PCFVPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Public subnet"
+          }
+        ]
+      }
+    },
+    "PCFInternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+      }
+    },
+    "dopt56d4c234": {
+      "Type": "AWS::EC2::DHCPOptions",
+      "Properties": {
+        "DomainName": "ec2.internal",
+        "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ]
+      }
+    },
+    "PCFNetworkAcl": {
+      "Type": "AWS::EC2::NetworkAcl",
+      "Properties": {
+        "VpcId": {
+          "Ref": "PCFVPC"
+        }
+      }
+    },
+    "rtb47e38222": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "PCFVPC"
+        }
+      }
+    },
+    "rtb45e38220": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "PCFVPC"
+        }
+      }
+    },
+    "eip54164172199": {
+      "Type": "AWS::EC2::EIP",
+      "DependsOn": [
+        "gw1"
+      ],
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": {
+          "Ref": "AWSNatInstance"
+        }
+      }
+    },
+    "AWSNatInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "FALSE",
+        "ImageId": "ami-224dc94a",
+        "InstanceType": "m1.small",
+        "KernelId": "aki-919dcaf8",
+        "KeyName": { "Ref" : "KeyName" },
+        "Monitoring": "false",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPC NAT"
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "PCFPublicSubnet"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "10.0.0.164",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sgPCF"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "OpsManagerInstance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "FALSE",
+        "ImageId": { "Ref" : "OpsMgrAMI" },
+        "InstanceType": "m3.xlarge",
+        "KernelId": "aki-919dcaf8",
+        "KeyName": { "Ref" : "KeyName" },
+        "Monitoring": "false",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Ops Manager"
+          }
+        ],
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["",[
+            "#!/bin/bash -ex","\n",
+            "cd /tmp","\n",
+            "git clone https://gist.github.com/3ebf56d80dcf01250f8e.git /tmp/json","\n",
+            "sudo sed -i 's/<PRIVATESUBNETID>/",{"Ref": "PCFPrivateSubnet"},"/g' json/samplepcf.json","\n",
+            "sudo sed -i 's=<AWSACCESSKEY>=",{"Ref": "AWSAccessKeyID"},"=g' json/samplepcf.json","\n",
+            "sudo sed -i 's=<AWSSECRETKEY>=",{"Ref": "AWSSecretKey"},"=g' json/samplepcf.json","\n",
+            "sudo sed -i 's=<VPCID>=",{"Ref": "PCFVPC"},"=g' json/samplepcf.json","\n",
+            "sudo sed -i 's=<SECURITYGROUP>=",{"Ref": "sgPCF"},"=g' json/samplepcf.json","\n",
+            "sleep 60","\n",
+            "curl --insecure \"https://localhost/api/users\" -d 'user[user_name]=",{ "Ref" : "OpsMgrWebUID" },"&user[password]=",{ "Ref" : "OpsMgrWebPW" },"&user[password_confirmation]=",{ "Ref" : "OpsMgrWebPW" },"' -X POST","\n",                 
+            "curl --insecure \"https://localhost/api/installation_settings\" -F 'installation[file]=@/tmp/json/samplepcf.json' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
+            "curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n"
+        ]]}},
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "PCFPublicSubnet"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "10.0.0.88",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sgPCF"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
+      }
+    },
+    "volumevol52d6b216": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "AvailabilityZone": {"Ref": "AvailabilityZoneName"},
+        "Size": "20",
+        "VolumeType": "standard"
+      }
+    },
+    "volumevol2837506c": {
+      "Type": "AWS::EC2::Volume",
+      "Properties": {
+        "AvailabilityZone": "us-east-1d",
+        "Size": "1",
+        "VolumeType": "standard"
+      }
+    },
+    "sgPCF": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "launch-wizard-1 created 2014-12-11T17:23:01.449-06:00",
+        "VpcId": {
+          "Ref": "PCFVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "udp",
+            "FromPort": "53",
+            "ToPort": "53",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "1",
+            "ToPort": "65535",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags" : [
+          { "Key" : "Name", "Value" : "PCFsg" }]
+      
+      }
+
+    },
+    "acl1": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "CidrBlock": "0.0.0.0/0",
+        "Egress": true,
+        "Protocol": "-1",
+        "RuleAction": "allow",
+        "RuleNumber": "100",
+        "NetworkAclId": {
+          "Ref": "PCFNetworkAcl"
+        }
+      }
+    },
+    "acl2": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "CidrBlock": "0.0.0.0/0",
+        "Protocol": "-1",
+        "RuleAction": "allow",
+        "RuleNumber": "100",
+        "NetworkAclId": {
+          "Ref": "PCFNetworkAcl"
+        }
+      }
+    },
+    "subnetacl1": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": {
+          "Ref": "PCFNetworkAcl"
+        },
+        "SubnetId": {
+          "Ref": "PCFPublicSubnet"
+        }
+      }
+    },
+    "subnetacl2": {
+      "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+      "Properties": {
+        "NetworkAclId": {
+          "Ref": "PCFNetworkAcl"
+        },
+        "SubnetId": {
+          "Ref": "PCFPrivateSubnet"
+        }
+      }
+    },
+    "gw1": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "PCFVPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "PCFInternetGateway"
+        }
+      }
+    },
+    "subnetroute1": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "rtb47e38222"
+        },
+        "SubnetId": {
+          "Ref": "PCFPublicSubnet"
+        }
+      }
+    },
+    "route1": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "rtb47e38222"
+        },
+        "GatewayId": {
+          "Ref": "PCFInternetGateway"
+        }
+      },
+      "DependsOn": "gw1"
+    },
+    "route2": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "rtb45e38220"
+        },
+        "InstanceId": {
+          "Ref": "AWSNatInstance"
+        }
+      }
+    },
+    "dchpassoc1": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": {
+          "Ref": "PCFVPC"
+        },
+        "DhcpOptionsId": {
+          "Ref": "dopt56d4c234"
+        }
+      }
+    },
+    "ingress1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgPCF"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "ingress2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgPCF"
+        },
+        "IpProtocol": "udp",
+        "FromPort": "53",
+        "ToPort": "53",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "ingress3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgPCF"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "1",
+        "ToPort": "65535",
+        "CidrIp": "0.0.0.0/0"
+      }
+    }
+    
+  },
+  "Description": "PCF on AWS Template"
+}
