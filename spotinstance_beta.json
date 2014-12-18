@@ -270,7 +270,7 @@
             "sudo sed -i 's=<SECURITYGROUP>=",{"Ref": "sgPCF"},"=g' json/samplepcf.json","\n",
             "git clone https://gist.github.com/c3a90977396a9bca915a.git /tmp/addspot","\n",
             "sudo chmod +x /tmp/addspot/addspotinstance.sh","\n",
-            "sudo ./tmp/addspot/addspotinstance.sh","\n",
+            "sudo /tmp/addspot/addspotinstance.sh","\n",
             "sleep 55","\n",
             "sudo service tempest-web stop","\n",
             "sleep 5","\n",
