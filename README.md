@@ -3,7 +3,7 @@ PCF_AWS_CloudFormation
 
 Setup:
 
-1. Ensure a keypair named "bosh" doesn't already exist - If it does you'll need to delete it.
+1. Ensure a keypair named "bosh" doesn't already exist - If it does you'll need to delete it.  Code has been added in the bootstrap to delete a "bosh" keypair if it exists
 2. Create a keypair (opsmgr would be good - but doesn't have to be)
 3. Add Key to your local mac (avoids having to do ssh -i <key> everytime you connect to AWS)
   $ ssh-add ~/.ssh/your-key.pem
@@ -26,8 +26,8 @@ Use this file to:
 
 What's not working:
 
-1.  Unable to get Security Group Name into CloudFormation script - it only gets the Group ID - This causes OpsManager to not find the Security group.  You can manually paste in the value
-2.  The Final Step to automatically install "Director" doesn't work.  This is caused because of SecurityGroupId being looked up.
+1.  The Final Step to automatically install "Director" doesn't work.  This is caused because of SecurityGroupId being looked up.
+
 
 To do:
 
