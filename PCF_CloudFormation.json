@@ -59,17 +59,11 @@
       "Default": "",
       "Description": "Enter your AWS Access Key ID"
     },
-
-    "UseSpotInstances": {
+"SSHKEY": {
       "Type": "String",
-      "Default": "No",
-      "Description": "Enter Yes or No on using AWS Spot Instances"
+      "Default": "NotWorking"
     },
-    "UseSpotInstancesPrice": {
-      "Type": "String",
-      "Default": "0.15",
-      "Description": "Not Used Yet - Future Bucket to input Max Price"
-    },
+    
     "AWSSecretKey": {
       "Type": "String",
       "Default": "",
@@ -98,9 +92,15 @@
     },
     "OpsMgrAMI": {
       "Type": "String",
-      "Default": "ami-76b02a1e",
+      "Default": "ami-384f1750",
       "Description": "Enter Ops Manager AMI"
     },
+    "ElasticRuntimeURL": {
+      "Type": "String",
+      "Default": "http://bit.ly/1GMp8Oi",
+      "Description": "URL to latest Elastic Runtime URL"
+    },
+
     "AWSRegion": {
       "Type": "String",
       "Default": "us-east-1",
@@ -166,7 +166,7 @@
                   "DeviceName" : "/dev/sda1",
                   "Ebs" : {
                      "DeleteOnTermination" : "true",
-                     "VolumeSize" : "40"
+                     "VolumeSize" : "100"
                   }
                }
             ],
@@ -181,21 +181,14 @@
             "#!/bin/bash -ex","\n",
             "cd /tmp","\n",
             "git clone https://gist.github.com/5ea5bb91e2749fdb73b5.git /tmp/json","\n",
-            "git clone https://gist.github.com/b59b9462b1a162c539cc.git /tmp/spot","\n",  
-            "cd /tmp/spot","\n",
-            "chmod +x spotinstances.sh","\n","./spotinstances.sh ",{ "Ref" : "UseSpotInstances" },"\n", 
             "sleep 30","\n",
-            "sudo service tempest-web stop","\n",
-            "sleep 5","\n",
-            "sudo service tempest-web start","\n",
-            "sleep 10","\n",
             "curl --insecure \"https://localhost/api/users\" -d 'user[user_name]=",{ "Ref" : "OpsMgrWebUID" },"&user[password]=",{ "Ref" : "OpsMgrWebPW" },"&user[password_confirmation]=",{ "Ref" : "OpsMgrWebPW" },"' -X POST","\n",                 
             "curl --insecure \"https://localhost/api/installation_settings\" -X GET -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," > /tmp/origconfig.json","\n",
             "git clone https://gist.github.com/c4ab27eda4a92a08934f.git key","\n",
             "cd key","\n",
             "chmod +x make_bosh_key.sh","\n",
             "sudo ./make_bosh_key.sh ",{"Ref": "AWSAccessKeyID"}," ",{"Ref": "AWSSecretKey"},"\n",
-            "aws configure set aws_access_key_id ", {"Ref":"AWSAccessKeyID"}," ; aws configure set aws_secret_access_key ", {"Ref":"AWSSecretKey"}, " ; aws configure set region ", {"Ref":"AWSRegion"},"\n",
+            "aws configure set aws_access_key_id ", {"Ref":"AWSAccessKeyID"}," ; aws configure set aws_secret_access_key ", {"Ref":"AWSSecretKey"}, " ; aws configure set region ", {"Ref":"AWSRegion"},"\n", 
             "touch /tmp/touch1.txt","\n",
             "aws ec2 describe-security-groups --group-ids ",{ "Ref" : "sgPCF" }," | jq '.SecurityGroups[0].GroupName' > /tmp/testgroup.txt","\n",
             "touch /tmp/touch2.txt","\n",
@@ -205,9 +198,12 @@
             "touch /tmp/touch3.txt","\n",
             "sudo sed -i \"s/<SECURITYGROUP>/$sgName/g\" /tmp/json/merge.json","\n",
             "sudo sed -i 's/<PRIVATESUBNETID>/",{"Ref": "PrivateSubnet1"},"/g' /tmp/json/merge.json","\n",
+            "sudo sed -i 's/<AZNAME>/",{"Ref": "AvailabilityZone1"},"/g' /tmp/json/merge.json","\n",
             "sudo sed -i 's=<AWSACCESSKEY>=",{"Ref": "AWSAccessKeyID"},"=g' /tmp/json/merge.json","\n",
             "sudo sed -i 's=<AWSSECRETKEY>=",{"Ref": "AWSSecretKey"},"=g' /tmp/json/merge.json","\n",
-            "sudo sed -i 's/<VPCID>/",{"Ref": "PCFVPC"},"/g' /tmp/json/merge.json","\n",
+            "sudo sed -i 's~<VPCID>~",{"Ref": "PCFVPC"},"~g' /tmp/json/merge.json","\n",
+            "touch /tmp/touch3.0.1.txt","\n",
+            "sudo sed -i 's~<SSHKEY>~",{"Ref": "SSHKEY"},"~g' /tmp/json/merge.json > output301.txt","\n",
             "touch /tmp/touch3.1.txt","\n",
             "jq -s add /tmp/origconfig.json /tmp/json/merge.json > /tmp/json/sendit.json","\n",
             "touch /tmp/touch3.2.txt","\n",
@@ -216,7 +212,10 @@
             "git clone https://gist.github.com/4818a5b92e1754fff3d1.git /tmp/json/withoutguid","\n",
             "nwGuid=$(cat /tmp/configwithoutguid.json | jq '.infrastructure.networks[0].guid')","\n",
             "sudo sed -i \"s/<NETWORKGUID>/$nwGuid/g\" /tmp/json/withoutguid/networkguid.json","\n",
-            "jq -s add /tmp/configwithoutguid.json /tmp/json/withoutguid/networkguid.json > /tmp/json/sendit2.json","\n",
+            "#jq -s add /tmp/configwithoutguid.json /tmp/json/withoutguid/networkguid.json > /tmp/json/sendit2.json","\n",
+            "git clone https://gist.github.com/a6c0c9dee2adeeeb91f6.git /tmp/mergej","\n",
+            "cd /tmp/mergej","\n",
+            "python mergejson.py","\n",
             "curl --insecure \"https://localhost/api/installation_settings\" -F 'installation[file]=@/tmp/json/sendit2.json' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
             "#curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
             "touch /tmp/touch4.txt","\n", 
@@ -224,8 +223,9 @@
             "mkdir /tmp/runtime","\n",
             "cd /tmp/runtime","\n",
             "touch /tmp/touch5.txt","\n",
-            "wget https://s3.amazonaws.com/experimental-runtime-aws/ccc.zip","\n",
-            "curl --insecure 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ccc.zip' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k","\n",   
+            "wget ",{ "Ref" : "ElasticRuntimeURL" } ," -O /tmp/runtime/ER.pivotal","\n",
+            "curl --insecure 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ER.pivotal' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k","\n",
+            "#curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
             "touch /tmp/done.txt","\n"
         ]]}},
         "NetworkInterfaces": [
