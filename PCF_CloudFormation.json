@@ -223,8 +223,8 @@
             "mkdir /tmp/runtime","\n",
             "cd /tmp/runtime","\n",
             "touch /tmp/touch5.txt","\n",
-            "wget ",{ "Ref" : "ElasticRuntimeURL" } ," -O /tmp/runtime/ER.pivotal","\n",
-            "curl --insecure 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ER.pivotal' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k","\n",
+            "wget ",{ "Ref" : "ElasticRuntimeURL" } ," -O /tmp/runtime/ER.zip","\n",
+            "curl --insecure 'https://localhost/api/products' -F 'product[file]=@/tmp/runtime/ER.zip' -X POST -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," -k","\n",
             "#curl --insecure \"https://localhost/api/installation\" -d 'ignore_warnings=true' -X POST -u ", { "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
             "touch /tmp/done.txt","\n"
         ]]}},
