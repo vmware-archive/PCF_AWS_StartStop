@@ -187,7 +187,7 @@
             "mkdir /tmp/jq","\n",
             "cd /tmp/jq","\n",
             "wget http://stedolan.github.io/jq/download/source/jq-1.4.tar.gz","\n",
-            "tar -xzvf jq-1.4.tar.gz","\n"
+            "tar -xzvf jq-1.4.tar.gz","\n",
             "cd jq-1.4","\n",
             "./configure ; make","\n",
             "sudo make install","\n",
