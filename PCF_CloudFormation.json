@@ -92,7 +92,7 @@
     },
     "OpsMgrAMI": {
       "Type": "String",
-      "Default": "ami-384f1750",
+      "Default": "ami-aa0721c2",
       "Description": "Enter Ops Manager AMI"
     },
     "ElasticRuntimeURL": {
