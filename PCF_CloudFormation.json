@@ -1,3 +1,4 @@
+
 {
   "Description": "pivotalcf template",
   "Mappings": {
@@ -200,6 +201,7 @@
             "./configure ; make","\n",
             "sudo make install","\n",
             "cd /tmp","\n",
+            "aws configure set aws_access_key_id ", {"Ref":"AWSAccessKeyID"}," ; aws configure set aws_secret_access_key ", {"Ref":"AWSSecretKey"}, " ; aws configure set region ", {"Ref":"AWSRegion"},"\n",
             "touch /tmp/touch1.txt","\n",
             "aws ec2 describe-security-groups --group-ids ",{ "Ref" : "sgPCF" }," | jq '.SecurityGroups[0].GroupName' > /tmp/testgroup.txt","\n",
             "touch /tmp/touch2.txt","\n",
