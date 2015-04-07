@@ -36,6 +36,11 @@
         "Ref": "NatEip1"
       }
     },
+   "AWSAZ": {
+      "Description": "AWS AZ selected",
+      "Value": {"Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }  } ] }
+
+    },
    "PrivateSubnet1" : {
       "Value" : { "Ref" : "PrivateSubnet1" },
       "Description" : "This is the SubnetID of te Private Subnet"
@@ -106,15 +111,6 @@
       "Type": "String",
       "Default": "us-east-1",
       "Description": "AWS Region"
-    },
-    "AvailabilityZone1": {
-      "AllowedPattern": "[-a-zA-Z0-9]*",
-      "ConstraintDescription": "Alphanumeric characters and dashes only",
-      "Default": "us-east-1b",
-      "Description": "Availability Zone name",
-      "MaxLength": "15",
-      "MinLength": "10",
-      "Type": "String"
     },
     "NatInstanceType": {
       "AllowedValues": [
@@ -211,7 +207,7 @@
             "touch /tmp/touch3.txt","\n",
             "sudo sed -i \"s/<SECURITYGROUP>/$sgName/g\" /tmp/json/merge.json","\n",
             "sudo sed -i 's/<PRIVATESUBNETID>/",{"Ref": "PrivateSubnet1"},"/g' /tmp/json/merge.json","\n",
-            "sudo sed -i 's/<AZNAME>/",{"Ref": "AvailabilityZone1"},"/g' /tmp/json/merge.json","\n",
+            "sudo sed -i 's/<AZNAME>/",{ "Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" } } ] },"/g' /tmp/json/merge.json","\n",
             "sudo sed -i 's=<AWSACCESSKEY>=",{"Ref": "AWSAccessKeyID"},"=g' /tmp/json/merge.json","\n",
             "sudo sed -i 's=<AWSSECRETKEY>=",{"Ref": "AWSSecretKey"},"=g' /tmp/json/merge.json","\n",
             "sudo sed -i 's~<VPCID>~",{"Ref": "PCFVPC"},"~g' /tmp/json/merge.json","\n",
@@ -393,9 +389,7 @@
     },
     "PrivateSubnet1": {
       "Properties": {
-        "AvailabilityZone": {
-          "Ref": "AvailabilityZone1"
-        },
+        "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }} ] },
         "CidrBlock": "10.0.1.0/24",
         "VpcId": {
           "Ref": "PCFVPC"
@@ -436,9 +430,7 @@
     },
     "PublicSubnet1": {
       "Properties": {
-        "AvailabilityZone": {
-          "Ref": "AvailabilityZone1"
-        },
+        "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" :  { "Ref" : "AWSRegion" } } ] },
         "CidrBlock": "10.0.0.1/24",
         "VpcId": {
           "Ref": "PCFVPC"
