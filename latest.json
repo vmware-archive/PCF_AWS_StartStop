@@ -580,7 +580,7 @@
     "PCFPrivateSubnetAZ1": {
       "Properties": {
         "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }} ] },
-        "CidrBlock": "10.0.1.0/20",
+        "CidrBlock": "10.0.16.0/20",
         "VpcId": {
           "Ref": "PCFVPC"
         },
