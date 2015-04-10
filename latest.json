@@ -252,8 +252,8 @@
             "s3:*"
         ],
         "Resource": [
-            "arn:aws:s3:::opsmgrbucket",
-            "arn:aws:s3:::opsmgrbucket/*",
+            "arn:aws:s3:::opsmanagerbucket",
+            "arn:aws:s3:::opsmanagerbucket/*",
             "arn:aws:s3:::elasticruntimebucket",
             "arn:aws:s3:::elasticruntimebucket/*"
         ]
