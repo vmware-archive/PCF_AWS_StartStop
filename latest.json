@@ -39,7 +39,7 @@
       "Value" : { "Ref" : "myaccesskey" },
       "Description": "Users accesskey"  
     },
-    
+
     "SecretKey":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
     },
@@ -109,22 +109,19 @@
       "Default": "password",
       "Description": "Enter the desired RDS password (default is password)"
       },
-    "AWSAccessKeyID": {
-      "Type": "String",
-      "Default": "",
-      "Description": "Enter your AWS Access Key ID"
-    },
-    
-    "AWSSecretKey": {
-      "Type": "String",
-      "Default": "",
-      "Description": "Enter AWS Secret Key"
-    },
     "OpsMgrWebUID": {
       "Type": "String",
       "Default": "admin",
       "Description": "Ops Manager Web Username (will create) - admin is default"
     },
+    "OpsManagerInstanceType" : {
+      "Description" : "Instance type for Ops Manager",
+      "Type" : "String",
+      "Default" : "m3.xlarge",
+      "AllowedValues" : ["m3.large","m3.xlarge"],
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+
     "OpsMgrWebPW": {
       "Type": "String",
       "NoEcho": "true",
@@ -327,7 +324,7 @@
       "Properties": {
         "DisableApiTermination": "FALSE",
         "ImageId": { "Ref" : "OpsMgrAMI" },
-        "InstanceType": "m3.large",
+        "InstanceType": { "Ref" : "OpsManagerInstanceType" },
         "KernelId": "aki-919dcaf8",
         "KeyName": { "Ref" : "KeyName" },
         "BlockDeviceMappings" : [
