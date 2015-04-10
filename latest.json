@@ -66,12 +66,12 @@
       "Value": {"Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }  } ] }
 
     },
-   "PrivateSubnet1" : {
-      "Value" : { "Ref" : "PrivateSubnet1" },
+   "PCFPrivateSubnetAZ1" : {
+      "Value" : { "Ref" : "PCFPrivateSubnetAZ1" },
       "Description" : "This is the SubnetID of te Private Subnet"
    },
-   "PublicSubnet1" : {
-      "Value" : { "Ref" : "PublicSubnet1" },
+   "PublicSubnetAZ1" : {
+      "Value" : { "Ref" : "PublicSubnetAZ1" },
       "Description" : "This is the SubnetID of te Public Subnet"
    },
    "RDSHost": {
@@ -357,7 +357,7 @@
             "Description": "Primary network interface",
             "DeviceIndex": 0,
             "SubnetId": {
-              "Ref": "PublicSubnet1"
+              "Ref": "PublicSubnetAZ1"
             },
             "PrivateIpAddresses": [
               {
@@ -391,7 +391,7 @@
         ],
         "SourceDestCheck": "false",
         "SubnetId": {
-          "Ref": "PublicSubnet1"
+          "Ref": "PublicSubnetAZ1"
         },
         "Tags": [
           {
@@ -577,13 +577,19 @@
       },
       "Type": "AWS::EC2::RouteTable"
     },
-    "PrivateSubnet1": {
+    "PCFPrivateSubnetAZ1": {
       "Properties": {
         "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }} ] },
-        "CidrBlock": "10.0.1.0/24",
+        "CidrBlock": "10.0.1.0/20",
         "VpcId": {
           "Ref": "PCFVPC"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "pcf-private-az1"
+          }
+        ]
       },
       "Type": "AWS::EC2::Subnet"
     },
@@ -593,7 +599,7 @@
           "Ref": "PrivateRouteTable1"
         },
         "SubnetId": {
-          "Ref": "PrivateSubnet1"
+          "Ref": "PCFPrivateSubnetAZ1"
         }
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation"
@@ -618,15 +624,22 @@
       },
       "Type": "AWS::EC2::RouteTable"
     },
-    "PublicSubnet1": {
+    "PublicSubnetAZ1": {
       "Properties": {
         "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" :  { "Ref" : "AWSRegion" } } ] },
         "CidrBlock": "10.0.0.1/24",
         "VpcId": {
           "Ref": "PCFVPC"
-        }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "public-az1"
+          }
+        ]
       },
       "Type": "AWS::EC2::Subnet"
+      
     },
     "rds1": {
       "Properties": {
@@ -695,7 +708,7 @@
 
        "Subnets": [
           {
-            "Ref":"PublicSubnet1"           }
+            "Ref":"PublicSubnetAZ1"           }
         ],
         "HealthCheck": {
           "HealthyThreshold": "10",
@@ -724,7 +737,7 @@
           "Ref": "PublicRouteTable1"
         },
         "SubnetId": {
-          "Ref": "PublicSubnet1"
+          "Ref": "PublicSubnetAZ1"
         }
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation"
