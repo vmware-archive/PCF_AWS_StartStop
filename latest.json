@@ -103,14 +103,6 @@
       "Default": "admin",
       "Description": "Enter the desired RDS user"
       },
-    "ElasticRuntimeBucket":{
-      "Type": "String",
-      "Description": "Unique Name for S3 Elastic Runtime Bucket"
-    },
-    "OpsManagerBucket":{
-      "Type": "String",
-      "Description": "Unique Name for S3 OpsManager Bucket"
-    },
     "DBPassword":{
       "Type": "String",
       "NoEcho": "true",
@@ -186,7 +178,6 @@
     "Type" : "AWS::S3::Bucket",
     "Properties" : {
    
-      "BucketName" : { "Ref" : "OpsManagerBucket" },
       "Tags" : [
           {
             "Key": "Name",
@@ -198,8 +189,7 @@
    "elasticruntimebucket": {
    "Type" : "AWS::S3::Bucket",
    "Properties" : {
-   
-      "BucketName" : { "Ref" : "ElasticRuntimeBucket" },
+
       "Tags" : [
           {
             "Key": "Name",
@@ -260,10 +250,10 @@
             "s3:*"
         ],
         "Resource": [ 
-           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "ElasticRuntimeBucket"       }]]},
-           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "ElasticRuntimeBucket"}, "/*" ]]},
-           {"Fn::Join": ["",["arn:aws:s3:::", { "Ref" : "OpsManagerBucket"           }]]},
-           {"Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "OpsManagerBucket"},"/*"       ]]}
+           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "elasticruntimebucket"       }]]},
+           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "elasticruntimebucket"}, "/*" ]]},
+           {"Fn::Join": ["",["arn:aws:s3:::", { "Ref" : "opsmanagerbucket"           }]]},
+           {"Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "opsmanagerbucket"},"/*"       ]]}
 
         ]
     },
