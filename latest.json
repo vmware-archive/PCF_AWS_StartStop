@@ -259,11 +259,12 @@
         "Action": [
             "s3:*"
         ],
-        "Resource": [
-            "arn:aws:s3:::opsmanagerbucket",
-            "arn:aws:s3:::opsmanagerbucket/*",
-            "arn:aws:s3:::elasticruntimebucket",
-            "arn:aws:s3:::elasticruntimebucket/*"
+        "Resource": [ 
+           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "ElasticRuntimeBucket"       }]]},
+           { "Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "ElasticRuntimeBucket"}, "/*" ]]},
+           {"Fn::Join": ["",["arn:aws:s3:::", { "Ref" : "OpsManagerBucket"           }]]},
+           {"Fn::Join": ["",["arn:aws:s3:::",{ "Ref" : "OpsManagerBucket"},"/*"       ]]}
+
         ]
     },
     {
