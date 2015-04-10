@@ -103,6 +103,14 @@
       "Default": "admin",
       "Description": "Enter the desired RDS user"
       },
+    "ElasticRuntimeBucket":{
+      "Type": "String",
+      "Description": "Unique Name for S3 Elastic Runtime Bucket"
+    },
+    "OpsManagerBucket":{
+      "Type": "String",
+      "Description": "Unique Name for S3 OpsManager Bucket"
+    },
     "DBPassword":{
       "Type": "String",
       "NoEcho": "true",
@@ -178,7 +186,7 @@
     "Type" : "AWS::S3::Bucket",
     "Properties" : {
    
-      "BucketName" : "opsmanagerbucket",
+      "BucketName" : { "Ref" : "OpsManagerBucket" },
       "Tags" : [
           {
             "Key": "Name",
@@ -191,7 +199,7 @@
    "Type" : "AWS::S3::Bucket",
    "Properties" : {
    
-      "BucketName" : "elasticruntimebucket",
+      "BucketName" : { "Ref" : "ElasticRuntimeBucket" },
       "Tags" : [
           {
             "Key": "Name",
