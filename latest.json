@@ -178,7 +178,7 @@
     "Type" : "AWS::S3::Bucket",
     "Properties" : {
    
-
+      "BucketName" : "opsmanagerbucket",
       "Tags" : [
           {
             "Key": "Name",
@@ -191,7 +191,7 @@
    "Type" : "AWS::S3::Bucket",
    "Properties" : {
    
-
+      "BucketName" : "elasticruntimebucket",
       "Tags" : [
           {
             "Key": "Name",
