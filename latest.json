@@ -344,10 +344,11 @@
         ],
         "UserData" : { "Fn::Base64" : { "Fn::Join" : ["",[
             "#!/bin/bash -ex","\n",
-             "sleep 30","\n",
-            "## This sleep just makes sure opsmanager gets started up - probably better way to do this","\n",
+             "sleep 45","\n",
+            "## This sleep just makes sure opsmanager gets started up before doing curl below - probably better way to do this","\n",
             "curl --insecure \"https://localhost/api/users\" -d 'user[user_name]=",{ "Ref" : "OpsMgrWebUID" },"&user[password]=",{ "Ref" : "OpsMgrWebPW" },"&user[password_confirmation]=",{ "Ref" : "OpsMgrWebPW" },"' -X POST","\n",                 
-            "curl --insecure \"https://localhost/api/installation_settings\" -X GET -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" }," > /tmp/origconfig.json","\n",
+            "printf 'create database uaa;\ncreate database ccdb;\ncreate database console;\ncreate database notifications;\ncreate database autoscale;\ncreate database app_usage_service;\n' > /tmp/createdb.sql","\n", 
+            "mysql -h ",{"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]}," -u ",{ "Ref" : "DBUser" }," -p",{ "Ref" : "DBPassword" }," < /tmp/createdb.sql","\n",
              "touch /tmp/done.txt","\n"
         ]]}},
         "NetworkInterfaces": [
