@@ -114,6 +114,12 @@
       "Default": "admin",
       "Description": "Ops Manager Web Username (will create) - admin is default"
     },
+    "ELBName": {
+      "Type": "String",
+      "MinLength": "5",
+      "MaxLength": "32",
+      "Description": "Enter the desired unique name of the Enterprise Load Balancer"
+    },
     "OpsManagerInstanceType" : {
       "Description" : "Instance type for Ops Manager",
       "Type" : "String",
@@ -705,7 +711,7 @@
     "ElasticLoadBalancer": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
-
+       "LoadBalancerName": { "Ref": "ELBName"},
        "Subnets": [
           {
             "Ref":"PublicSubnetAZ1"           }
