@@ -76,11 +76,11 @@
       "Description": "Assign this value to AWS Ops Manager Director->Director Config->External MySQL Database->Port"
     },
     "12RDSUserID":{
-      "Value": { "Ref" : "DBUser"}
+      "Value": { "Ref" : "DBUser"},
       "Description": "Assign this value to AWS Ops Manager Director->Director Config->External MySQL Database->Username"
     },
     "13RDSPassword":{
-      "Value": { "Ref" : "DBPassword"}
+      "Value": { "Ref" : "DBPassword"},
       "Description": "Assign this value to AWS Ops Manager Director->Director Config->External MySQL Database->Password"
     },
     "14RDSDatabase":{
