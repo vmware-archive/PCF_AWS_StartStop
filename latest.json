@@ -98,6 +98,10 @@
 
   },
   "Parameters": {
+    "ElasticRuntimeURL": {
+      "Type": "String",
+      "Description": "Enter the optional URL to desired Elastic Runtime to download and import"
+    },
     "DBUser":{
       "Type": "String",
       "Default": "admin",
@@ -355,6 +359,13 @@
             "curl --insecure \"https://localhost/api/users\" -d 'user[user_name]=",{ "Ref" : "OpsMgrWebUID" },"&user[password]=",{ "Ref" : "OpsMgrWebPW" },"&user[password_confirmation]=",{ "Ref" : "OpsMgrWebPW" },"' -X POST","\n",                 
             "printf 'create database uaa;\ncreate database ccdb;\ncreate database console;\ncreate database notifications;\ncreate database autoscale;\ncreate database app_usage_service;\n' > /tmp/createdb.sql","\n", 
             "mysql -h ",{"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]}," -u ",{ "Ref" : "DBUser" }," -p",{ "Ref" : "DBPassword" }," < /tmp/createdb.sql","\n",
+            "erurl=",{"Ref": "ElasticRuntimeURL"},"\n",
+            "if [ ${#erurl} -gt 5 ]; then","\n",
+              "wget -P /tmp $erurl","\n",
+              "#### Dynamic Name from file not working due to variable inside single quotes ### - curl 'https://localhost/api/products' -F 'product[file]=@/tmp/${erurl##*/}' -X POST -k -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
+              "curl 'https://localhost/api/products' -F 'product[file]=@/tmp/cf-1.4.0.0.pivotal' -X POST -k -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
+
+            "fi","\n",
              "touch /tmp/done.txt","\n"
         ]]}},
         "NetworkInterfaces": [
