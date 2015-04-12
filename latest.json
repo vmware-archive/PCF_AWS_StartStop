@@ -421,7 +421,7 @@
     "OpsManager": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
-        "GroupDescription": "launch-wizard-1 created 2014-12-11T17:23:01.449-06:00",
+        "GroupDescription": "Ops Manager Security Group",
         "VpcId": {
           "Ref": "PCFVPC"
         },
@@ -486,7 +486,7 @@
     },
     "pcfVMs": {
       "Properties": {
-        "GroupDescription": "pcfVMs",
+        "GroupDescription": "PCF VMs Security Group",
 
         "SecurityGroupIngress": [
           
@@ -537,7 +537,7 @@
      },
      "PCFELBSecurityGroup": {
       "Properties": {
-        "GroupDescription": "PCF_ELB_SecurityGroup",
+        "GroupDescription": "PCF Elastic Load Balancer SecurityGroup",
 
         "SecurityGroupIngress": [
           
