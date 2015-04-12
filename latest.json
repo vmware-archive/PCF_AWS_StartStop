@@ -34,7 +34,26 @@
      "Value": { "Ref":"pcfiamuser" },
      "Description": "AWS IAM User Created for PCF"
     },
-
+    "SecurityGroupName": {
+      "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
+      "Description": "This is value is used in the OpsManager Director->AWS Config tile under 'Security Group Name'.  Click on the URL to the right and use the 'Group Name'"
+    },
+    "DBUser":{
+      "Value": { "Ref":"DBUser" },
+      "Description": "This is the RDS User"
+    },
+    "DBPassword":{
+      "Value": { "Ref":"DBPassword"},
+      "Description": "This the RDS Password"
+    },
+    "KeyPairName":{
+      "Value": { "Ref": "KeyName"},
+      "Description": "This is the keyname entered as a parameter and used in the AWS Config Tile"
+    },
+    "SSHPrivateKey":{
+      "Value": "Need some directions here",
+      "Description": "This is the 'SSH Private Key' entered as a parameter and used in the AWS Config Tile"
+    },
     "AccessKey": {
       "Value" : { "Ref" : "myaccesskey" },
       "Description": "Users accesskey"  
