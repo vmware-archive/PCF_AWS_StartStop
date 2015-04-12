@@ -66,8 +66,8 @@
       "Value": {"Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }  } ] }
 
     },
-   "PCFPrivateSubnetAZ1" : {
-      "Value" : { "Ref" : "PCFPrivateSubnetAZ1" },
+   "PrivateSubnetAZ1" : {
+      "Value" : { "Ref" : "PrivateSubnetAZ1" },
       "Description" : "This is the SubnetID of te Private Subnet"
    },
    "PublicSubnetAZ1" : {
@@ -364,7 +364,6 @@
               "wget -P /tmp $erurl","\n",
               "#### Dynamic Name from file not working due to variable inside single quotes ### - curl 'https://localhost/api/products' -F 'product[file]=@/tmp/${erurl##*/}' -X POST -k -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
               "curl 'https://localhost/api/products' -F 'product[file]=@/tmp/cf-1.4.0.0.pivotal' -X POST -k -u ",{ "Ref" : "OpsMgrWebUID" },":",{ "Ref" : "OpsMgrWebPW" },"\n",
-
             "fi","\n",
              "touch /tmp/done.txt","\n"
         ]]}},
@@ -455,7 +454,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "PCFsg"
+            "Value": "Opsmgr_Sec_Group"
           }
         ]
       }
@@ -594,7 +593,7 @@
       },
       "Type": "AWS::EC2::RouteTable"
     },
-    "PCFPrivateSubnetAZ1": {
+    "PrivateSubnetAZ1": {
       "Properties": {
         "AvailabilityZone": { "Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }} ] },
         "CidrBlock": "10.0.16.0/20",
@@ -616,7 +615,7 @@
           "Ref": "PrivateRouteTable1"
         },
         "SubnetId": {
-          "Ref": "PCFPrivateSubnetAZ1"
+          "Ref": "PrivateSubnetAZ1"
         }
       },
       "Type": "AWS::EC2::SubnetRouteTableAssociation"
