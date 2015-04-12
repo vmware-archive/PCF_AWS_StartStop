@@ -30,44 +30,89 @@
     }
   },
   "Outputs": {
-    "PCFiamUser": {
-     "Value": { "Ref":"pcfiamuser" },
-     "Description": "AWS IAM User Created for PCF"
-    },
-    "SecurityGroupName": {
-      "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
-      "Description": "This is value is used in the OpsManager Director->AWS Config tile under 'Security Group Name'.  Click on the URL to the right and use the 'Group Name'"
-    },
-    "RDS_DB_User":{
-      "Value": { "Ref":"DBUser" },
-      "Description": "This is the RDS User"
-    },
-    "RDS_DB_Password":{
-      "Value": { "Ref":"DBPassword"},
-      "Description": "This the RDS Password"
-    },
-    "KeyPairName":{
-      "Value": { "Ref": "KeyName"},
-      "Description": "This is the keyname entered as a parameter and used in the AWS Config Tile"
-    },
-    "SSHPrivateKey":{
-      "Value": "Need some directions here",
-      "Description": "This is the 'SSH Private Key' entered as a parameter and used in the AWS Config Tile"
-    },
-    "AccessKey": {
+    "01_AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
       "Description": "Users accesskey"  
     },
 
-    "SecretKey":{
+    "02_AWS_Secret_Key":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
     },
-    "OpsMgrBucketName": {
-            "Value": {
-                "Ref": "opsmanagerbucket"
-            },
-            "Description": "Name of the Ops Manager S3 bucket for PivotalCF."
-        },
+    "03_VPC_ID" : {
+      "Value" : { "Ref" : "PCFVPC" },
+      "Description" : "This is the VpcID of the PCF VPC"
+    }, 
+   "04_Security_Group_Name": {
+      "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
+      "Description": "This is value is used in the OpsManager Director->AWS Config tile under 'Security Group Name'.  Click on the URL to the right and use the 'Group Name'"
+    },
+   "05_Key_Pair_Name":{
+      "Value": { "Ref": "KeyName"},
+      "Description": "This is the keyname entered as a parameter and used in the AWS Config Tile"
+    },
+   "06_SSH_Private_Key":{
+      "Value": "Need some directions here",
+      "Description": "This is the 'SSH Private Key' entered as a parameter and used in the AWS Config Tile"
+    },
+   "07_OpsMgrBucketName": {
+      "Value": { "Ref": "opsmanagerbucket" },
+      "Description": "Name of the Ops Manager S3 bucket for PivotalCF."
+    },
+   "08_AccessKeyID": {
+      "Value" : { "Ref" : "myaccesskey" },
+      "Description": "Users accesskey"  
+    },
+   "09_AWS_Secret_Key":{
+      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
+    },
+   "10_RDS_Host": {
+      "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
+      "Description": "This is the RDS host endpoint"
+    },
+    "11_RDS_Port":{
+      "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Port" ]},
+      "Description": "This is the RDS port"
+    },
+    "12_RDS_UserID":{
+      "Value": { "Ref" : "DBUser"}
+    },
+    "13_RDS_Password":{
+      "Value": { "Ref" : "DBPassword"}
+    },
+    "14_RDS_Database":{
+      "Value": "bosh",
+      "Description":""
+    },
+    "15_Amazon_Availability_Zone": {
+
+      "Value": {"Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }  } ] },
+      "Description": "AWS AZ1"
+    },
+    "16_Network_Name":{
+      "Value":"PCF_Network",
+      "Description":"This can be any descriptive name of the network"
+    },
+    "17_VPC_Subnet_Id":{
+      "Value" : { "Ref" : "PrivateSubnetAZ1" },
+      "Description" : "This is the SubnetID of te Private Subnet"
+    },
+    "18_Subnet_CIDR_Range":{
+      "Value":"10.0.16.0/20",
+      "Description":"This is the default value"
+    },
+    "19_Excluded_IP_Ranges":{
+      "Value":"10.0.16.1-10.0.16.9",
+      "Description":"This is the default value"
+    },
+    "20_DNS":{
+      "Value":"10.0.0.2",
+      "Description":"This is the default value"
+    },
+    "21_Gateway":{
+      "Value":"10.0.0.1",
+      "Description":"This is the default value"
+    },
+    
      "ElasticRuntimeBucketName": {
             "Value": {
                 "Ref": "elasticruntimebucket"
@@ -106,10 +151,6 @@
       "Value" : { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}
    },
     
-   "PCFVpcId" : {
-      "Value" : { "Ref" : "PCFVPC" },
-      "Description" : "This is the VpcID of the PCF VPC"
-   }, 
    "OpsManDNS" : {
       "Value" : { "Fn::GetAtt": [ "OpsManagerInstance", "PublicDnsName" ] },
       "Description" : "This is the PublicDNS Name of OpsManger"
