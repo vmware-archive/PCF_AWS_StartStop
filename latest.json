@@ -30,85 +30,85 @@
     }
   },
   "Outputs": {
-    "01_AccessKeyID": {
+    "01AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
       "Description": "Users accesskey"  
     },
 
-    "02_AWS_Secret_Key":{
+    "02AWSSecretKey":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
     },
-    "03_VPC_ID" : {
+    "03VPCID" : {
       "Value" : { "Ref" : "PCFVPC" },
       "Description" : "This is the VpcID of the PCF VPC"
     }, 
-   "04_Security_Group_Name": {
+   "04SecurityGroupName": {
       "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
       "Description": "This is value is used in the OpsManager Director->AWS Config tile under 'Security Group Name'.  Click on the URL to the right and use the 'Group Name'"
     },
-   "05_Key_Pair_Name":{
+   "05KeyPairName":{
       "Value": { "Ref": "KeyName"},
       "Description": "This is the keyname entered as a parameter and used in the AWS Config Tile"
     },
-   "06_SSH_Private_Key":{
+   "06SSHPrivateKey":{
       "Value": "Need some directions here",
       "Description": "This is the 'SSH Private Key' entered as a parameter and used in the AWS Config Tile"
     },
-   "07_OpsMgrBucketName": {
+   "07OpsMgrBucketName": {
       "Value": { "Ref": "opsmanagerbucket" },
       "Description": "Name of the Ops Manager S3 bucket for PivotalCF."
     },
-   "08_AccessKeyID": {
+   "08AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
       "Description": "Users accesskey"  
     },
-   "09_AWS_Secret_Key":{
+   "09AWSSecretKey":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
     },
-   "10_RDS_Host": {
+   "10RDSHost": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
       "Description": "This is the RDS host endpoint"
     },
-    "11_RDS_Port":{
+    "11RDSPort":{
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Port" ]},
       "Description": "This is the RDS port"
     },
-    "12_RDS_UserID":{
+    "12RDSUserID":{
       "Value": { "Ref" : "DBUser"}
     },
-    "13_RDS_Password":{
+    "13RDSPassword":{
       "Value": { "Ref" : "DBPassword"}
     },
-    "14_RDS_Database":{
+    "14RDSDatabase":{
       "Value": "bosh",
       "Description":""
     },
-    "15_Amazon_Availability_Zone": {
+    "15AmazonAvailabilityZone": {
 
       "Value": {"Fn::Select" : [ "0", { "Fn::GetAZs" : { "Ref" : "AWSRegion" }  } ] },
       "Description": "AWS AZ1"
     },
-    "16_Network_Name":{
-      "Value":"PCF_Network",
+    "16NetworkName":{
+      "Value":"PCFNetwork",
       "Description":"This can be any descriptive name of the network"
     },
-    "17_VPC_Subnet_Id":{
+    "17VPCSubnetId":{
       "Value" : { "Ref" : "PrivateSubnetAZ1" },
       "Description" : "This is the SubnetID of te Private Subnet"
     },
-    "18_Subnet_CIDR_Range":{
+    "18SubnetCIDRRange":{
       "Value":"10.0.16.0/20",
       "Description":"This is the default value"
     },
-    "19_Excluded_IP_Ranges":{
+    "19ExcludedIPRanges":{
       "Value":"10.0.16.1-10.0.16.9",
       "Description":"This is the default value"
     },
-    "20_DNS":{
+    "20DNS":{
       "Value":"10.0.0.2",
       "Description":"This is the default value"
     },
-    "21_Gateway":{
+    "21Gateway":{
       "Value":"10.0.0.1",
       "Description":"This is the default value"
     },
@@ -138,11 +138,11 @@
       "Value" : { "Ref" : "PublicSubnetAZ1" },
       "Description" : "This is the SubnetID of te Public Subnet"
    },
-   "RDS_Host": {
+   "RDSHost": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
       "Description": "This is the RDS host endpoint"
     },
-    "RDS_Port":{
+    "RDSPort":{
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Port" ]},
       "Description": "This is the RDS port"
     },
