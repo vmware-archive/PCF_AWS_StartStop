@@ -32,52 +32,52 @@
   "Outputs": {
     "01AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
-      "Description": "Assign this value to the following: AWS Ops Manager Director->AWS Management Console Config->Access Key ID ; AWS Ops Manager Director->Director Config->Amazon S3->Access Key ; Pivotal Elastic Runtime->File Storage Config->Amazon S3->Access Key"
+      "Description" : "Assign this value to the following: AWS Ops Manager Director->AWS Management Console Config->Access Key ID ; AWS Ops Manager Director->Director Config->Amazon S3->Access Key ; Pivotal Elastic Runtime->File Storage Config->Amazon S3->Access Key"
     },
 
     "02AWSSecretKey":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
-      "Description": "Assign this value to the following: AWS Ops Manager Director->AWS Management Console Config->AWS Secret Key ; AWS Ops Manager Director->Director Config->Amazon S3->Secret Key ; Pivotal Elastic Runtime->File Storage Config->Amazon S3->Secret Key"
+      "Description" : "Assign this value to the following: AWS Ops Manager Director->AWS Management Console Config->AWS Secret Key ; AWS Ops Manager Director->Director Config->Amazon S3->Secret Key ; Pivotal Elastic Runtime->File Storage Config->Amazon S3->Secret Key"
     },
     "03VPCID" : {
       "Value" : { "Ref" : "PCFVPC" },
-      "Description": "Assign this value to AWS Ops Manager Director->AWS Management Console Config->VPC ID"
+      "Description" : "Assign this value to AWS Ops Manager Director->AWS Management Console Config->VPC ID"
     }, 
    "04SecurityGroupName": {
       "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
-      "Description": "Click on the URL to the right, copy the 'Group Name' value and assign it to AWS Ops Manager Director->AWS Management Console Config->Security Group Name"
+      "Description" : "Click on the URL to the right, copy the 'Group Name' value and assign it to AWS Ops Manager Director->AWS Management Console Config->Security Group Name"
     },
    "05KeyPairName":{
       "Value": { "Ref": "KeyName"},
-      "Description": "Assign this value to AWS Ops Manager Director->AWS Management Console Config->Key Pair Name"
+      "Description" : "Assign this value to AWS Ops Manager Director->AWS Management Console Config->Key Pair Name"
     },
    "06SSHPrivateKey":{
       "Value": "TODO - add link directions here",
-      "Description": "Click on the URL to the right, copy the 'Private Key' value and assign it to AWS Ops Manager Director->AWS Management Console Config->SSH Private Key"
+      "Description" : "Click on the URL to the right, copy the 'Private Key' value and assign it to AWS Ops Manager Director->AWS Management Console Config->SSH Private Key"
     },
    "07OpsMgrBucketName": {
       "Value": { "Ref": "opsmanagerbucket" },
-      "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Bucket Name"
+      "Description" : "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Bucket Name"
     },
    "08AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
-      "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Access Key"  
+      "Description" : "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Access Key"  
     },
    "09AWSSecretKey":{
       "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
-      "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Secret Key"
+      "Description" : "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Secret Key"
     },
    "10RDSHost": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
-      "Description": "Assign this value to the following: AWS Ops Manager Director->Director Config->External MySQL Database->Host ; Pivotal Elastic Runtime->System Database Config->External Databases->Hostname DNS Name"
+      "Description" : "Assign this value to the following: AWS Ops Manager Director->Director Config->External MySQL Database->Host ; Pivotal Elastic Runtime->System Database Config->External Databases->Hostname DNS Name"
     },
     "11RDSPort":{
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Port" ]},
-      "Description": "Assign this value to AWS Ops Manager Director->Director Config->External MySQL Database->Port ; Pivotal Elastic Runtime->System Database Config->External Databases->TCP Port"
+      "Description" : "Assign this value to AWS Ops Manager Director->Director Config->External MySQL Database->Port ; Pivotal Elastic Runtime->System Database Config->External Databases->TCP Port"
     },
     "12RDSUserID":{
       "Value": { "Ref" : "DBUser"}
-      "Description": "Assign this value to the following: AWS Ops Manager Director->Director Config->External MySQL Database->Username ; Pivotal Elastic Runtime->System Database Config->External Databases->Username"
+      "Description" : "Assign this value to the following: AWS Ops Manager Director->Director Config->External MySQL Database->Username ; Pivotal Elastic Runtime->System Database Config->External Databases->Username"
     },
     "13RDSPassword":{
       "Value": { "Ref" : "DBPassword"}
