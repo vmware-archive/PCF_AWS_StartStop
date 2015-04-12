@@ -36,7 +36,7 @@
     },
 
     "02AWSSecretKey":{
-      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
+      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]},
       "Description": "Assign this value to AWS Ops Manager Director->AWS Management Console Config->AWS Secret Key & Director Config->Amazon S3->Secret Key"
     },
     "03VPCID" : {
@@ -64,8 +64,8 @@
       "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Access Key"  
     },
    "09AWSSecretKey":{
-      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
-      "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Secret Key
+      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]},
+      "Description": "Assign this value to AWS Ops Manager Director->Director Config->Amazon S3->Secret Key"
     },
    "10RDSHost": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
