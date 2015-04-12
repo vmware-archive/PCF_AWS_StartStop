@@ -35,7 +35,7 @@
       "Description" : "Assign this value to AWS Ops Manager Director->AWS Management Console Config->Access Key ID , Director Config->Amazon S3->Access Key , Pivotal Elastic Runtime->File Storage Config->Amazon S3->Access Key"
     },
     "02AWSSecretKey":{
-      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]}
+      "Value" : { "Fn::GetAtt" : [ "myaccesskey", "SecretAccessKey" ]},
       "Description" : "Assign this value to the following: AWS Ops Manager Director->AWS Management Console Config->AWS Secret Key , Director Config->Amazon S3->Secret Key , Pivotal Elastic Runtime->File Storage Config->Amazon S3->Secret Key" 
     },
     "03VPCID" : {
