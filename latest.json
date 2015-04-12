@@ -533,7 +533,7 @@
           
        
           {
-            "CidrIp": "10.0.0.0/16",
+            "CidrIp": "0.0.0.0/0",
             "FromPort": "4443",
             "IpProtocol": "tcp",
             "ToPort": "4443"
@@ -719,7 +719,7 @@
         "HealthCheck": {
           "HealthyThreshold": "10",
           "Interval": "10",
-          "Target": "HTTP:80/",
+          "Target": "TCP:80",
           "Timeout": "5",
           "UnhealthyThreshold": "2"
         },
