@@ -41,7 +41,7 @@
     },
     "03VPCID" : {
       "Value" : { "Ref" : "PCFVPC" },
-      "Description" : "Assign this value to AWS Ops Manager Director->AWS Management Console Config->VPC ID"
+      "Description": "Assign this value to AWS Ops Manager Director->AWS Management Console Config->VPC ID"
     }, 
    "04SecurityGroupName": {
       "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
