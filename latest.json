@@ -38,11 +38,11 @@
       "Value": "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#SecurityGroups:search=pcfvms;sort=groupId",
       "Description": "This is value is used in the OpsManager Director->AWS Config tile under 'Security Group Name'.  Click on the URL to the right and use the 'Group Name'"
     },
-    "DBUser":{
+    "RDS_DB_User":{
       "Value": { "Ref":"DBUser" },
       "Description": "This is the RDS User"
     },
-    "DBPassword":{
+    "RDS_DB_Password":{
       "Value": { "Ref":"DBPassword"},
       "Description": "This the RDS Password"
     },
@@ -93,11 +93,11 @@
       "Value" : { "Ref" : "PublicSubnetAZ1" },
       "Description" : "This is the SubnetID of te Public Subnet"
    },
-   "RDSHost": {
+   "RDS_Host": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
       "Description": "This is the RDS host endpoint"
     },
-    "RDSPort":{
+    "RDS_Port":{
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Port" ]},
       "Description": "This is the RDS port"
     },
