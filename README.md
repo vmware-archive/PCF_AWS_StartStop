@@ -12,6 +12,7 @@ Setup:
 7. In about 8-10 Minutes you'll have an Ops Manager up and running
 8. In about 30-35 Munutes you'll have Ops Manager up and running with Elastic Runtime imported (if URL specified)
 9. Use the "Outputs" Tab in the CloudFormation screen for items to copy/paste into OpsManager
+10. Click "Apply Changes" and in ~2 Hours PCF Should be deployed
 
 
 Use this file to:
