@@ -135,11 +135,11 @@
     },
    "PrivateSubnetAZ1" : {
       "Value" : { "Ref" : "PrivateSubnetAZ1" },
-      "Description" : "This is the SubnetID of te Private Subnet"
+      "Description" : "This is the SubnetID of the Private Subnet"
    },
    "PublicSubnetAZ1" : {
       "Value" : { "Ref" : "PublicSubnetAZ1" },
-      "Description" : "This is the SubnetID of te Public Subnet"
+      "Description" : "This is the SubnetID of the Public Subnet"
    },
    "RDSHost": {
       "Value": {"Fn::GetAtt" : [ "MyRDS" , "Endpoint.Address" ]},
