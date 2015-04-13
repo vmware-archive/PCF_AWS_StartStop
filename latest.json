@@ -112,7 +112,7 @@
       "Description":"Suggested default value for AWS Ops Manager Director->Create Network->DNS"
     },
     "21Gateway":{
-      "Value":"10.0.0.1",
+      "Value":"10.0.16.1",
       "Description":"Suggested default value for AWS Ops Manager Director->Create Network->Gateway"
     },
     
