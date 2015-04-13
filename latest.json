@@ -530,9 +530,7 @@
           
           {
             "CidrIp": "10.0.0.0/16",
-            "FromPort": "0",
-            "IpProtocol": "tcp",
-            "ToPort": "65535"
+            "IpProtocol": "-1"
           }
         ],
           "Tags": [
@@ -555,9 +553,7 @@
           
           {
             "CidrIp": "10.0.0.0/16",
-            "FromPort": "0",
-            "IpProtocol": "tcp",
-            "ToPort": "65535"
+            "IpProtocol": "-1"
           }
         ],
           "Tags": [
