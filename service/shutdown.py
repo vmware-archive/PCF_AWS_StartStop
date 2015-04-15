@@ -54,7 +54,7 @@ numinstance = 0
 
 for res in reservations:
     for inst in res.instances:
-            if inst.state == "running":
+            if (inst.state == "running" and inst.vpcid == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
              numinstance = numinstance + 1
