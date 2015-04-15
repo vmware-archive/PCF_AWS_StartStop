@@ -1,6 +1,8 @@
 import os,time
 import boto
 
+vpc_id = "vpc-fbc79c9e"
+
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
  time.sleep(2)
