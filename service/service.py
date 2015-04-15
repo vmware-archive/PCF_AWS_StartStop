@@ -83,7 +83,7 @@ def startup():
  print "Starting Microbosh"
  startinstance(instanceid[microboshinstance])
 
- ## Since the Router has restarted with a new IP address we need to Remove and Add the router to the existing ELB.
+ ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
  elbconn=boto.connect_elb()
  load_balancer = elbconn.get_all_load_balancers()[0]
  routerinst = load_balancer.instances[0].id
