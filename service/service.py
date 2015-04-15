@@ -12,7 +12,6 @@ def startinstance(instanceid):
  instancefound = "false"
  while (instancefound == "false"):
   if checkinstance(instanceid) <> "running":
-   print "sleeping..."
    time.sleep(15)
   else:
    instancefound = "true"
@@ -24,7 +23,6 @@ def stopinstance(instanceid):
  instancefound = "false"
  while (instancefound == "false"):
   if checkinstance(instanceid) <> "stopped":
-   print "sleeping..."
    time.sleep(15)
   else:
    instancefound = "true"
@@ -47,7 +45,6 @@ def shutdown():
              instancename.append(inst.tags['Name'])
              if inst.tags['Name'].find("microbosh") <> -1:
               microboshinstance = numinstance
-              #print "microbosh is-->" + instancename[microboshinstance]
              numinstance = numinstance + 1
 
  ## Microbosh should be shutdown first or you'll have things likely ressurected!
@@ -57,8 +54,6 @@ def shutdown():
  for x in range(bootinstances - 1, -1,-1):
       for y in range (0,numinstance):
        if instancename[y].find(bootorder[x]) <> -1:
-        #print "Found It --> " + instancename[y] + " with " + bootorder[x]
-        #print "gonna check instance-> " + instanceid[y]
         if checkinstance(instanceid[y]) == "running":
          print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
          stopinstance(instanceid[y])
@@ -73,14 +68,13 @@ def startup():
              instancename.append(inst.tags['Name'])
              if inst.tags['Name'].find("microbosh") <> -1:
               microboshinstance = numinstance
-              #print "microbosh is-->" + instancename[microboshinstance]
+             if inst.tags['Name'].find("router") <> -1:
+              routerinstance = numinstance
              numinstance = numinstance + 1
 
  for x in range(bootinstances - 1, -1,-1):
       for y in range (0,numinstance):
        if instancename[y].find(bootorder[x]) <> -1:
-        #print "Found It --> " + instancename[y] + " with " + bootorder[x]
-        #print "gonna check instance-> " + instanceid[y]
         if checkinstance(instanceid[y]) == "stopped":
          print "Starting Instance: " + instanceid[y] + " : " + instancename[y]
          startinstance(instanceid[y])
@@ -88,6 +82,20 @@ def startup():
   
  print "Starting Microbosh"
  startinstance(instanceid[microboshinstance])
+
+ ## Since the Router has restarted with a new IP address we need to Remove and Add the router to the existing ELB.
+ elbconn=boto.connect_elb()
+ load_balancer = elbconn.get_all_load_balancers()[0]
+ routerinst = load_balancer.instances[0].id
+ print "Removing instance: " + routerinst + " from ELB: " + load_balancer.name
+ elbconn.deregister_instances(load_balancer.name,load_balancer.instances[0].id)
+ time.sleep(5)
+
+ load_balancer = elbconn.get_all_load_balancers()[0]
+
+ print "Adding instance: " + routerinst + " to ELB: " + load_balancer.name
+
+ elbconn.register_instances(load_balancer.name,routerinst)
 
 
 conn=boto.connect_ec2()
