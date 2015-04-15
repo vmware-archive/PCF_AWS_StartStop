@@ -1,5 +1,5 @@
-Service Manager
-===============
+#Service Manager
+
 
 
 This utility is used to help stop/start PCF installations on AWS.  In this example, it assumes you have your AWS Access Key and AWS secret key configured in a file located in ~/ called .boto
@@ -7,16 +7,16 @@ This utility is used to help stop/start PCF installations on AWS.  In this examp
 
 contents of ~/.boto file
 
-[Credentials]
+**[Credentials]**
 
 aws_access_key_id = <Your Access Key ID>
 
 aws_secret_access_key = <Your AWS Secret ID>
 
 
-Required:
-1.  boto
-2.  python
+##Required:
+####1.  boto  (pip install boto)
+####2.  python (I have version 2.7.x)
 
 
 Usage:
