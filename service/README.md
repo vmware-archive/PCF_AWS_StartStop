@@ -19,9 +19,13 @@ aws_secret_access_key = <Your AWS Secret ID>
 ####2.  python (I have version 2.7.x)
 
 
-Usage:
+###Syntax:
+```sh
+python service.py [stop/start] [vpc_id]
+```
 
-python service.py <stop/start> <vpc_id>
+###example:
 
-example:
+```sh
 $ python service.py start vpc-fbc79c9e
+```
