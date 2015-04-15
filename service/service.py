@@ -9,23 +9,23 @@ print option1 + ": vpc_id=" + vpc_id
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
  time.sleep(2)
- instancefound = "false"
- while (instancefound == "false"):
+ instanceready = "false"
+ while (instanceready == "false"):
   if checkinstance(instanceid) <> "running":
    time.sleep(15)
   else:
-   instancefound = "true"
+   instanceready = "true"
 
 
 def stopinstance(instanceid):
  conn.stop_instances(instance_ids=[instanceid])
  time.sleep(2)
- instancefound = "false"
- while (instancefound == "false"):
+ instanceready = "false"
+ while (instanceready == "false"):
   if checkinstance(instanceid) <> "stopped":
    time.sleep(15)
   else:
-   instancefound = "true"
+   instanceready = "true"
  
 
 def checkinstance(instanceid):
