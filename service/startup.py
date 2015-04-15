@@ -1,6 +1,18 @@
 import os,time
 import boto
 
+def startinstance(instanceid):
+ conn.start_instances(instance_ids=[instanceid])
+ time.sleep(2)
+ instancefound = "false"
+ while (instancefound == "false"):
+  if checkinstance(instanceid) <> "started":
+   print "sleeping..."
+   time.sleep(2)
+  else:
+   instancefound = "true"
+
+
 def stopinstance(instanceid):
  conn.stop_instances(instance_ids=[instanceid])
  time.sleep(2)
