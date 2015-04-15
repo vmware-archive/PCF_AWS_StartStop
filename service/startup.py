@@ -48,18 +48,11 @@ for res in reservations:
 stoplist = []
 for x in range(bootinstances - 1, -1,-1):
      for y in range (0,numinstance):
-      if instancename[y].find(bootorder[x]) == -1:
-       i = 1
-      else:
+      if instancename[y].find(bootorder[x]) <> -1:
        print "Found It --> " + instancename[y] + " with " + bootorder[x]
        print "gonna check instance-> " + instanceid[y]
        if checkinstance(instanceid[y]) == "running":
         stopinstance(instanceid[y])
-       
-       #conn.stop_instances(instance_ids=[instance[y-1]])
-       #stoplist.append(instance[y-1])
-       #time.sleep(30)
        break;
 
-print "bootinstances: " + str(bootinstances)
-print "numinstance: " + str(numinstance)
+
