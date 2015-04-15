@@ -50,23 +50,44 @@ with open(bootorder, "r") as boot:
     line = line.rstrip('\n')
     bootorder.append(line)
 
-numinstance = 0
+startup()
 
-for res in reservations:
-    for inst in res.instances:
+def shutdown():
+ numinstance = 0
+ for res in reservations:
+     for inst in res.instances:
             if (inst.state == "running" and inst.vpcid == vpc_id):
+             instanceid.append(inst.id)
+             instancename.append(inst.tags['Name'])
+             if inst.tags['Name'].find("microbosh"):
+              microboshinstance = numinstance
+             numinstance = numinstance + 1
+
+ for x in range(bootinstances - 1, -1,-1):
+      for y in range (0,numinstance):
+       if instancename[y].find(bootorder[x]) <> -1:
+        print "Found It --> " + instancename[y] + " with " + bootorder[x]
+        print "gonna check instance-> " + instanceid[y]
+        if checkinstance(instanceid[y]) == "running":
+         stopinstance(instanceid[y])
+        break;
+        
+def startup()
+ numinstance = 0
+ for res in reservations:
+     for inst in res.instances:
+            if (inst.state == "stopped" and inst.vpcid == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
              numinstance = numinstance + 1
 
-stoplist = []
-for x in range(bootinstances - 1, -1,-1):
-     for y in range (0,numinstance):
-      if instancename[y].find(bootorder[x]) <> -1:
-       print "Found It --> " + instancename[y] + " with " + bootorder[x]
-       print "gonna check instance-> " + instanceid[y]
-       if checkinstance(instanceid[y]) == "running":
-        stopinstance(instanceid[y])
-       break;
+ for x in range(bootinstances - 1, -1,-1):
+      for y in range (0,numinstance):
+       if instancename[y].find(bootorder[x]) <> -1:
+        print "Found It --> " + instancename[y] + " with " + bootorder[x]
+        print "gonna check instance-> " + instanceid[y]
+        if checkinstance(instanceid[y]) == "stopped":
+         startinstance(instanceid[y])
+        break;
 
 
