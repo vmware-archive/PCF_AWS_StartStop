@@ -112,5 +112,4 @@ if option1 == "start":
 if option1 == "stop":
  print "heading to shutdown"
  shutdown();
-else:
- print "Error in parameter 1"
+
