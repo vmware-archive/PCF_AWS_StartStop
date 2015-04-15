@@ -2,7 +2,7 @@ Service Manager
 ===============
 
 
-This utility is used to help stop/start PCF installations on AWS.  In this example, it assumes you have your AWS Access Key and AWS secret key configured in a file located in ~/.boto
+This utility is used to help stop/start PCF installations on AWS.  In this example, it assumes you have your AWS Access Key and AWS secret key configured in a file located in ~/ called .boto
 
 
 contents of ~/.boto file
