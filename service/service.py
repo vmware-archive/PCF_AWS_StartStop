@@ -5,38 +5,35 @@ option1 = sys.argv[1]
 vpc_id = sys.argv[2]
 
 print option1 + ": vpc_id=" + vpc_id
-#vpc_id = "vpc-fbc79c9e"
 
 def startinstance(instanceid):
- print "Starting: " + instanceid
  conn.start_instances(instance_ids=[instanceid])
  time.sleep(2)
  instancefound = "false"
  while (instancefound == "false"):
   if checkinstance(instanceid) <> "running":
    print "sleeping..."
-   time.sleep(2)
+   time.sleep(15)
   else:
    instancefound = "true"
 
 
 def stopinstance(instanceid):
- print "Stopping: " + instanceid
  conn.stop_instances(instance_ids=[instanceid])
  time.sleep(2)
  instancefound = "false"
  while (instancefound == "false"):
   if checkinstance(instanceid) <> "stopped":
    print "sleeping..."
-   time.sleep(2)
+   time.sleep(15)
   else:
    instancefound = "true"
  
 
 def checkinstance(instanceid):
- res2=conn.get_all_instances()
- for rese in res2:
-   for inst in rese.instances:
+ res=conn.get_all_instances()
+ for res in res:
+   for inst in res.instances:
     if inst.id == instanceid:
      return inst.state
  return "error"
@@ -63,6 +60,7 @@ def shutdown():
         #print "Found It --> " + instancename[y] + " with " + bootorder[x]
         #print "gonna check instance-> " + instanceid[y]
         if checkinstance(instanceid[y]) == "running":
+         print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
          stopinstance(instanceid[y])
         break;
         
@@ -70,7 +68,6 @@ def startup():
  numinstance = 0
  for res in reservations:
      for inst in res.instances:
-            print "here->"+ inst.id
             if (inst.state == "stopped" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
@@ -85,6 +82,7 @@ def startup():
         #print "Found It --> " + instancename[y] + " with " + bootorder[x]
         #print "gonna check instance-> " + instanceid[y]
         if checkinstance(instanceid[y]) == "stopped":
+         print "Starting Instance: " + instanceid[y] + " : " + instancename[y]
          startinstance(instanceid[y])
         break;
   
