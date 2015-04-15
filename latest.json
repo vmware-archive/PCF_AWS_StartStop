@@ -1,34 +1,6 @@
 
 {
   "Description": "pivotalcf template",
-  "Mappings": {
-    "NatAmi": {
-      "ap-northeast-1": {
-        "AMI": "ami-27d6e626"
-      },
-      "ap-southeast-1": {
-        "AMI": "ami-6aa38238"
-      },
-      "ap-southeast-2": {
-        "AMI": "ami-893f53b3"
-      },
-      "eu-west-1": {
-        "AMI": "ami-14913f63"
-      },
-      "sa-east-1": {
-        "AMI": "ami-224dc94a"
-      },
-      "us-east-1": {
-        "AMI": "ami-184dc970"
-      },
-      "us-west-1": {
-        "AMI": "ami-a98396ec"
-      },
-      "us-west-2": {
-        "AMI": "ami-290f4119"
-      }
-    }
-  },
   "Outputs": {
     "01AccessKeyID": {
       "Value" : { "Ref" : "myaccesskey" },
@@ -181,16 +153,16 @@
       "Default": "admin",
       "Description": "Ops Manager Web Username (will create) - admin is default"
     },
-    "ELBName": {
+    "ELBRDSName": {
       "Type": "String",
       "MinLength": "5",
       "MaxLength": "32",
-      "Description": "Enter the desired unique name of the Enterprise Load Balancer"
+      "Description": "Enter the desired unique name of the Enterprise Load Balancer and RDS instance"
     },
     "OpsManagerInstanceType" : {
       "Description" : "Instance type for Ops Manager",
       "Type" : "String",
-      "Default" : "m3.xlarge",
+      "Default" : "m3.large",
       "AllowedValues" : ["m3.large","m3.xlarge"],
       "ConstraintDescription" : "must be a valid EC2 instance type."
     },
@@ -206,7 +178,7 @@
       "AllowedPattern": "[-_ a-zA-Z0-9]*",
       "ConstraintDescription": "Alphanumeric characters, underscores, dashes only",
       "Description": "Existing key pair to access instances",
-      "Default": "opsmgr",
+      "Default": "pcf",
       "MaxLength": "64",
       "MinLength": "1",
       "Type": "String"
@@ -224,24 +196,17 @@
     },
     "NatInstanceType": {
       "AllowedValues": [
-        "t1.micro",
-        "m1.small",
-        "m1.medium",
-        "m1.large",
-        "m1.xlarge",
-        "m2.xlarge",
-        "m2.2xlarge",
-        "m2.4xlarge",
+        "t2.micro",
+        "t2.small",
+        "t2.medium",
+        "m3.large",
+        "c4.large",
         "m3.xlarge",
-        "m3.2xlarge",
-        "c1.medium",
-        "c1.xlarge",
-        "cc1.4xlarge",
-        "cc2.8xlarge",
-        "cg1.4xlarge"
+        "c4.xlarge",
+        "c4.8xlarge"
       ],
       "ConstraintDescription": "Instance type must be of a valid EC2 type",
-      "Default": "m1.small",
+      "Default": "t2.medium",
       "Description": "EC2 instance type for NAT instances",
       "Type": "String"
     }
@@ -458,8 +423,8 @@
     "NatInstance1": {
       "DependsOn": "InternetGateway",
       "Properties": {
-        "ImageId": "ami-224dc94a",
-        "InstanceType": "m1.small",
+        "ImageId": "ami-184dc970",
+        "InstanceType": {"Ref": "NatInstanceType"},
         "KeyName": {
           "Ref": "KeyName"
         },
@@ -763,13 +728,13 @@
      "Type" : "AWS::RDS::DBInstance",
      "Properties" : {
        "AllocatedStorage" : "100",
-       "DBInstanceClass" : "db.m3.large",
+       "DBInstanceClass" : "db.t2.medium",
        "Engine" : "MySQL",
        "EngineVersion" : "5.6.22",
        "MultiAZ" : "True",
        "DBName" : "bosh",
        "Iops" : "1000",
-       "DBInstanceIdentifier" : "pcf-bosh",
+       "DBInstanceIdentifier" : { "Ref": "ELBRDSName"},
        "MasterUsername" : { "Ref" : "DBUser" },
        "MasterUserPassword" : { "Ref" : "DBPassword" },
        "PubliclyAccessible" : "False",
@@ -780,7 +745,7 @@
     "ElasticLoadBalancer": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
-       "LoadBalancerName": { "Ref": "ELBName"},
+       "LoadBalancerName": { "Ref": "ELBRDSName"},
        "Subnets": [
           {
             "Ref":"PublicSubnetAZ1"           }
