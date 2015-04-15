@@ -35,28 +35,11 @@ def checkinstance(instanceid):
      return inst.state
  return "error"
 
-conn=boto.connect_ec2()
-reservations = conn.get_all_instances()
-
-instanceid = []
-instancename = []
-
-bootorder = 'bootorder.txt'
-with open(bootorder, "r") as boot:
-  bootorder = []
-  bootinstances = 0
-  for line in boot:
-    bootinstances = bootinstances + 1
-    line = line.rstrip('\n')
-    bootorder.append(line)
-
-startup()
-
 def shutdown():
  numinstance = 0
  for res in reservations:
      for inst in res.instances:
-            if (inst.state == "running" and inst.vpcid == vpc_id):
+            if (inst.state == "running" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
              if inst.tags['Name'].find("microbosh"):
@@ -72,11 +55,11 @@ def shutdown():
          stopinstance(instanceid[y])
         break;
         
-def startup()
+def startup():
  numinstance = 0
  for res in reservations:
      for inst in res.instances:
-            if (inst.state == "stopped" and inst.vpcid == vpc_id):
+            if (inst.state == "stopped" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
              numinstance = numinstance + 1
@@ -90,4 +73,20 @@ def startup()
          startinstance(instanceid[y])
         break;
 
+conn=boto.connect_ec2()
+reservations = conn.get_all_instances()
+
+instanceid = []
+instancename = []
+
+bootorder = 'bootorder.txt'
+with open(bootorder, "r") as boot:
+  bootorder = []
+  bootinstances = 0
+  for line in boot:
+    bootinstances = bootinstances + 1
+    line = line.rstrip('\n')
+    bootorder.append(line)
+
+startup();
 
