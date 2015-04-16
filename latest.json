@@ -321,8 +321,8 @@
             "ec2:TerminateInstances",
             "ec2:RebootInstances",
             "ec2:CreateSnapshot",
-		        "ec2:DeleteSnapshot",
-            "ec2:DescribeSnapshots"
+            "ec2:DeleteSnapshot",
+            "ec2:DescribeSnapshots",
             "elasticloadbalancing:DescribeLoadBalancers",
             "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
             "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
