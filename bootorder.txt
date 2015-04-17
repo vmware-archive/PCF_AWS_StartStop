@@ -1,3 +1,5 @@
+Ops Manager
+Nat1
 nats
 etcd
 cloud_controller

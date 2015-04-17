@@ -8,24 +8,24 @@ print option1 + ": vpc_id=" + vpc_id
 
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
- time.sleep(2)
- instanceready = "false"
- while (instanceready == "false"):
-  if checkinstance(instanceid) <> "running":
-   time.sleep(15)
-  else:
-   instanceready = "true"
+# time.sleep(2)
+# instanceready = "false"
+# while (instanceready == "false"):
+#  if checkinstance(instanceid) <> "running":
+#   time.sleep(15)
+#  else:
+#   instanceready = "true"
 
 
 def stopinstance(instanceid):
  conn.stop_instances(instance_ids=[instanceid])
- time.sleep(2)
- instanceready = "false"
- while (instanceready == "false"):
-  if checkinstance(instanceid) <> "stopped":
-   time.sleep(15)
-  else:
-   instanceready = "true"
+# time.sleep(2)
+# instanceready = "false"
+# while (instanceready == "false"):
+#  if checkinstance(instanceid) <> "stopped":
+#   time.sleep(15)
+#  else:
+#   instanceready = "true"
  
 
 def checkinstance(instanceid):
@@ -58,7 +58,7 @@ def shutdown():
          print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
          stopinstance(instanceid[y])
         break;
-        
+ print "Shutdown Complete!"       
 def startup():
  numinstance = 0
  for res in reservations:
@@ -88,15 +88,29 @@ def startup():
  load_balancer = elbconn.get_all_load_balancers()[0]
  routerinst = load_balancer.instances[0].id
  print "Removing instance: " + routerinst + " from ELB: " + load_balancer.name
+ ## Currently this doesn't handle removing multiple routers
  elbconn.deregister_instances(load_balancer.name,load_balancer.instances[0].id)
- time.sleep(5)
+ print "Waiting for router to startup..."
+ instanceready = "false"
+ while (instanceready == "false"):
+  if checkinstance(routerinst) <> "running":
+   time.sleep(5)
+  else:
+   instanceready = "true"
+
+ ## This appears to be a reasonable amount of time for the services within the VM to startup.  
+ ## Since this VM is in a private subnet inaccessible from internet there's no way to test for specific service startup
+ ## If added to early the ELB views the instance as "unhealthy" and marks it out of service
+ ## Another way to potentially check on this would be to check the state of the ELB instance (i.e. InService or OutOfService) and remove/add with delay until InService
+ 
+ time.sleep(100)
 
  load_balancer = elbconn.get_all_load_balancers()[0]
 
  print "Adding instance: " + routerinst + " to ELB: " + load_balancer.name
-
+## Currently this doesn't handle adding multiple routers
  elbconn.register_instances(load_balancer.name,routerinst)
-
+ print "Startup Complete!"
 
 conn=boto.connect_ec2()
 reservations = conn.get_all_instances()
