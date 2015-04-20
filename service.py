@@ -3,6 +3,7 @@ import boto
 
 option1 = sys.argv[1]
 vpc_id = sys.argv[2]
+routerinstances = []
 
 print option1 + ": vpc_id=" + vpc_id
 
@@ -69,7 +70,9 @@ def startup():
              if inst.tags['Name'].find("microbosh") <> -1:
               microboshinstance = numinstance
              if inst.tags['Name'].find("router") <> -1:
+              print "Found a router - marking for ELB Addition..."
               routerinstance = numinstance
+              routerinstances.append(numinstance)  ### This is new code to start to deal with multiple routers - it captures a list, but doesn't do anything yet
              numinstance = numinstance + 1
 
  for x in range(bootinstances - 1, -1,-1):
@@ -87,9 +90,12 @@ def startup():
  elbconn=boto.connect_elb()
  load_balancer = elbconn.get_all_load_balancers()[0]
  routerinst = load_balancer.instances[0].id
+ print load_balancer.instances
+ print "Here's a list of routers: " + str(routerinstances)
  print "Removing instance: " + routerinst + " from ELB: " + load_balancer.name
  ## Currently this doesn't handle removing multiple routers
- elbconn.deregister_instances(load_balancer.name,load_balancer.instances[0].id)
+ if len(str(routerinstances))>2:
+  elbconn.deregister_instances(load_balancer.name,load_balancer.instances[0].id)
  print "Waiting for router to startup..."
  instanceready = "false"
  while (instanceready == "false"):
@@ -103,7 +109,7 @@ def startup():
  ## If added to early the ELB views the instance as "unhealthy" and marks it out of service
  ## Another way to potentially check on this would be to check the state of the ELB instance (i.e. InService or OutOfService) and remove/add with delay until InService
  
- time.sleep(100)
+ time.sleep(130)
 
  load_balancer = elbconn.get_all_load_balancers()[0]
 
