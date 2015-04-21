@@ -9,26 +9,10 @@ print option1 + ": vpc_id=" + vpc_id
 
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
-# time.sleep(2)
-# instanceready = "false"
-# while (instanceready == "false"):
-#  if checkinstance(instanceid) <> "running":
-#   time.sleep(15)
-#  else:
-#   instanceready = "true"
-
 
 def stopinstance(instanceid):
  conn.stop_instances(instance_ids=[instanceid])
-# time.sleep(2)
-# instanceready = "false"
-# while (instanceready == "false"):
-#  if checkinstance(instanceid) <> "stopped":
-#   time.sleep(15)
-#  else:
-#   instanceready = "true"
  
-
 def checkinstance(instanceid):
  res=conn.get_all_instances()
  for res in res:
@@ -36,6 +20,17 @@ def checkinstance(instanceid):
     if inst.id == instanceid:
      return inst.state
  return "error"
+
+def do_task():
+	time.sleep(1)
+
+def example_1(n):
+	for i in range(n):
+		do_task()
+		print '\b.',
+		sys.stdout.flush()
+	print ' Done!'
+	
 
 def shutdown():
  numinstance = 0
@@ -72,7 +67,7 @@ def startup():
              if inst.tags['Name'].find("router") <> -1:
               print "Found a router - marking for ELB Addition..."
               routerinstance = numinstance
-              routerinstances.append(numinstance)  ### This is new code to start to deal with multiple routers - it captures a list, but doesn't do anything yet
+              routerinstances.append(inst.id) 
              numinstance = numinstance + 1
 
  for x in range(bootinstances - 1, -1,-1):
@@ -89,33 +84,33 @@ def startup():
  ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
  elbconn=boto.connect_elb()
  load_balancer = elbconn.get_all_load_balancers()[0]
- routerinst = load_balancer.instances[0].id
- print load_balancer.instances
+ elbrouterinstances = load_balancer.instances
  print "Here's a list of routers: " + str(routerinstances)
- print "Removing instance: " + routerinst + " from ELB: " + load_balancer.name
- ## Currently this doesn't handle removing multiple routers
- if len(str(routerinstances))>2:
-  elbconn.deregister_instances(load_balancer.name,load_balancer.instances[0].id)
+ for inst in elbrouterinstances:
+  print "Removing instance: " + str(inst.id) + " from ELB: " + load_balancer.name
+  elbconn.deregister_instances(load_balancer.name,inst.id)
  print "Waiting for router to startup..."
- instanceready = "false"
- while (instanceready == "false"):
-  if checkinstance(routerinst) <> "running":
-   time.sleep(5)
-  else:
-   instanceready = "true"
+ for inst in routerinstances:
+  instanceready = "false"
+  while (instanceready == "false"):
+   if checkinstance(inst) <> "running":
+    time.sleep(5)
+   else:
+    instanceready = "true"
 
  ## This appears to be a reasonable amount of time for the services within the VM to startup.  
  ## Since this VM is in a private subnet inaccessible from internet there's no way to test for specific service startup
  ## If added to early the ELB views the instance as "unhealthy" and marks it out of service
  ## Another way to potentially check on this would be to check the state of the ELB instance (i.e. InService or OutOfService) and remove/add with delay until InService
- 
- time.sleep(130)
+
+ print 'Waiting ',
+ example_1(130)
+
 
  load_balancer = elbconn.get_all_load_balancers()[0]
-
- print "Adding instance: " + routerinst + " to ELB: " + load_balancer.name
-## Currently this doesn't handle adding multiple routers
- elbconn.register_instances(load_balancer.name,routerinst)
+ for inst in routerinstances:
+  print "Adding instance: " + inst + " to ELB: " + load_balancer.name
+  elbconn.register_instances(load_balancer.name,inst)
  print "Startup Complete!"
 
 conn=boto.connect_ec2()
