@@ -14,12 +14,20 @@ def stopinstance(instanceid):
  conn.stop_instances(instance_ids=[instanceid])
  
 def checkinstance(instanceid):
- res=conn.get_all_instances()
+ res=conn.get_all_instances(instance_ids=[instanceid])
  for res in res:
    for inst in res.instances:
     if inst.id == instanceid:
      return inst.state
  return "error"
+
+def getpublicdns(instanceid):
+ res=conn.get_all_instances(instance_ids=[instanceid])
+ for res in res:
+   for inst in res.instances:
+    if inst.id == instanceid:
+     return inst.public_dns_name
+ return "error" 
 
 def do_task():
 	time.sleep(1)
@@ -64,6 +72,8 @@ def startup():
              instancename.append(inst.tags['Name'])
              if inst.tags['Name'].find("microbosh") <> -1:
               microboshinstance = numinstance
+             if inst.tags['Name'].find("Ops Manager") <> -1:
+              OpsManagerInstanceId = inst.id
              if inst.tags['Name'].find("router") <> -1:
               print "Found a router - marking for ELB Addition..."
               routerinstance = numinstance
@@ -83,7 +93,12 @@ def startup():
 
  ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
  elbconn=boto.connect_elb()
- load_balancer = elbconn.get_all_load_balancers()[0]
+
+ ## This section assigns the elb that has a matching vpc_id
+ load_balancers = elbconn.get_all_load_balancers()
+ for elb in load_balancers:
+  if elb.vpc_id == vpc_id:
+   load_balancer = elb
  elbrouterinstances = load_balancer.instances
  print "Here's a list of routers: " + str(routerinstances)
  for inst in elbrouterinstances:
@@ -107,11 +122,12 @@ def startup():
  example_1(130)
 
 
- load_balancer = elbconn.get_all_load_balancers()[0]
+
  for inst in routerinstances:
   print "Adding instance: " + inst + " to ELB: " + load_balancer.name
   elbconn.register_instances(load_balancer.name,inst)
  print "Startup Complete!"
+ print "Ops Manager Public DNS: http://" + getpublicdns(OpsManagerInstanceId)
 
 conn=boto.connect_ec2()
 reservations = conn.get_all_instances()
