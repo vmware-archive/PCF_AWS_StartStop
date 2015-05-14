@@ -20,3 +20,4 @@ mysql-partition
 dea
 doppler
 loggregator_trafficcontroller
+cloud_controller-partition

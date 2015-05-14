@@ -47,9 +47,10 @@ def shutdown():
             if (inst.state == "running" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
-             if inst.tags['Name'].find("microbosh") <> -1:
-              microboshinstance = numinstance
-             numinstance = numinstance + 1
+             if 'Name' in inst.tags:
+               if inst.tags['Name'].find("microbosh") <> -1:
+                microboshinstance = numinstance
+               numinstance = numinstance + 1
 
  ## Microbosh should be shutdown first or you'll have things likely ressurected!
  print "Stopping Microbosh"
