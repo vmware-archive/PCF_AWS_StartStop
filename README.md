@@ -7,11 +7,29 @@ This utility is used to help stop/start PCF installations on AWS.  In this examp
 
 contents of ~/.boto file
 
-**[Credentials]**
-
+```
+[Credentials]
 aws_access_key_id = <Your Access Key ID>
-
 aws_secret_access_key = <Your AWS Secret ID>
+```
+
+If you followed the [documented process] (http://cf-p1-docs-acceptance.cfapps.io/pivotalcf/customizing/pcf-aws-component-config.html) to create your AWS PCF environment, there are two things you need to do to make this utility work:
+
+1. Make sure that the IAM user associated with the access key has sufficient permissions to start and stop vms. By default it does not, and the script will fail with a message saying ```boto.exception.EC2ResponseError: EC2ResponseError: 403 Forbidden```. The quickest way to assign the needed permissions is to go in to AWS IAM and attach the AmazonEC2FullAccess managed policy to the user. The better, more secure, way is to add the following statement to the inline policy for the user:
+  
+  ```
+          {
+              "Sid": "StopStart",
+              "Effect": "Allow",
+              "Action": [
+                  "ec2:StopInstances",
+                  "ec2:StartInstances"
+              ],
+              "Resource": "*"
+          }
+  ```
+
+2. Make sure that your EC2 instance names match the names in the bootorder.txt file. By default, the Ops Manager and NAT instances are left unnamed. The bootorder.txt file, and the service.py script, expect them to be "Ops Manager" and "Nat1", respectively. Using a different name for the Ops Manager instance requires a change in both places. And case matters.
 
 
 ##Required:
