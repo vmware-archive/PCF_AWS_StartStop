@@ -1,4 +1,9 @@
 Ops Manager
+elasticsearch_autoscale
+elasticsearch_persistent
+api
+ingestor
+queue
 NAT Instance
 Nat1
 nats
