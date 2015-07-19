@@ -4,6 +4,7 @@ elasticsearch_persistent
 api
 ingestor
 queue
+log_parser
 NAT Instance
 Nat1
 nats
