@@ -1,3 +1,6 @@
+NAT Instance
+ha_proxy-partition
+consul_server-partition
 Ops Manager
 Nat1
 nats
