@@ -24,3 +24,9 @@ dea
 doppler
 loggregator_trafficcontroller
 cloud_controller-partition
+route_emitter-partition
+brain-partition
+cc_bridge-partition
+cell-partition
+etcd_server-partition
+
