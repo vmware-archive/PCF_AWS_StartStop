@@ -4,11 +4,20 @@ from boto.exception import EC2ResponseError
 
 option1 = sys.argv[1]
 vpc_id = sys.argv[2]
-aws_region = sys.argv[3]
+
+argv_len = len(sys.argv)
+
+## This assumes if no region is listed it is the default aws_region of us-east-1
+if argv_len == 3:
+ aws_region = "us-east-1"
+
+if argv_len == 4:
+ aws_region = sys.argv[3]
+
 
 routerinstances = []
 
-print option1 + ": vpc_id=" + vpc_id
+print option1 + ": vpc_id=" + vpc_id + " within aws_region: " + aws_region
 
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
