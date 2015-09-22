@@ -21,13 +21,17 @@ aws_secret_access_key = <Your AWS Secret ID>
 
 ###Syntax:
 ```sh
-python service.py [stop/start] [vpc_id] [aws-region]
+python service.py [stop/start] [vpc_id] [aws-region (default if left blank is "us-east-1")]
 ```
 
 ###example:
 
 ```sh
+
+$ python service.py start vpc-fbc79c9e
+OR specify aws_region
 $ python service.py start vpc-fbc79c9e us-east-1
+
 ```
 
 ###Things to watch for
