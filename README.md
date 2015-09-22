@@ -21,11 +21,15 @@ aws_secret_access_key = <Your AWS Secret ID>
 
 ###Syntax:
 ```sh
-python service.py [stop/start] [vpc_id]
+python service.py [stop/start] [vpc_id] [aws-region]
 ```
 
 ###example:
 
 ```sh
-$ python service.py start vpc-fbc79c9e
+$ python service.py start vpc-fbc79c9e us-east-1
 ```
+
+###Things to watch for
+1. If Ops Manager is not being started. Check in AWS console that Ops Manager instance Tag name is 'Ops Manager' and not 'OpsManager'
+
