@@ -29,10 +29,13 @@ python service.py [stop/start] [vpc_id] [aws-region (default if left blank is "u
 ```sh
 
 $ python service.py start vpc-fbc79c9e
-OR specify aws_region
-$ python service.py start vpc-fbc79c9e us-east-1
-
 ```
+OR Optionally specify aws_region (default is "us-east-1")
+```sh
+$ python service.py start vpc-fbc79c9e us-east-1
+```
+
+
 
 ###Things to watch for
 1. If Ops Manager is not being started. Check in AWS console that Ops Manager instance Tag name is 'Ops Manager' and not 'OpsManager'
