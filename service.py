@@ -79,7 +79,6 @@ def shutdown():
  for y in range (0,numinstance):
  	for x in range(bootinstances - 1, -1,-1):
 	   if instancename[y].find(bootorder[x]) <> -1:
-	   #if any(instancename[y] in s for s in bootorder):
 	    if checkinstance(instanceid[y]) == "running":
 	     print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
 	     stopinstance(instanceid[y])
@@ -112,7 +111,6 @@ def startup():
 
  for y in range (0,numinstance):
       for x in range(bootinstances - 1, -1,-1):
-      #for y in range (0,numinstance):
        if instancename[y].find(bootorder[x]) <> -1:
         if checkinstance(instanceid[y]) == "stopped":
          print "Starting Instance: " + instanceid[y] + " : " + instancename[y]
