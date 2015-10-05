@@ -24,3 +24,10 @@ dea
 doppler
 loggregator_trafficcontroller
 cloud_controller-partition
+rabbitmq-broker-partition
+rabbitmq-haproxy-partition
+rabbitmq-server-partition
+cf-mysql-broker-partition
+mysql_proxy-partition
+mysql-partition
+proxy-partition

@@ -65,23 +65,28 @@ def shutdown():
             if (inst.state == "running" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
              instancename.append(inst.tags['Name'])
+             print "Adding instancename for shutdown:" + inst.tags['Name'] + " : " + inst.id 
              if 'Name' in inst.tags:
                if inst.tags['Name'].find("microbosh") <> -1:
                 microboshinstance = numinstance
                numinstance = numinstance + 1
 
+ print "Total number of instances for shutdown:" , numinstance
  ## Microbosh should be shutdown first or you'll have things likely ressurected!
  print "Stopping Microbosh"
  stopinstance(instanceid[microboshinstance])
  
- for x in range(bootinstances - 1, -1,-1):
-      for y in range (0,numinstance):
-       if instancename[y].find(bootorder[x]) <> -1:
-        if checkinstance(instanceid[y]) == "running":
-         print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
-         stopinstance(instanceid[y])
-        break;
+ for y in range (0,numinstance):
+ 	for x in range(bootinstances - 1, -1,-1):
+	   if instancename[y].find(bootorder[x]) <> -1:
+	   #if any(instancename[y] in s for s in bootorder):
+	    if checkinstance(instanceid[y]) == "running":
+	     print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
+	     stopinstance(instanceid[y])
+	    break;
  print "Shutdown Complete!"       
+
+
 
 
 
@@ -105,8 +110,9 @@ def startup():
               routerinstances.append(inst.id) 
              numinstance = numinstance + 1
 
- for x in range(bootinstances - 1, -1,-1):
-      for y in range (0,numinstance):
+ for y in range (0,numinstance):
+      for x in range(bootinstances - 1, -1,-1):
+      #for y in range (0,numinstance):
        if instancename[y].find(bootorder[x]) <> -1:
         if checkinstance(instanceid[y]) == "stopped":
          print "Starting Instance: " + instanceid[y] + " : " + instancename[y]
