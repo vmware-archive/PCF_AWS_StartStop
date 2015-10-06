@@ -79,9 +79,18 @@ def shutdown():
 
  print "Total number of instances for shutdown:" , numinstance
  ## Microbosh should be shutdown first or you'll have things likely ressurected!
- print "Stopping Microbosh"
- stopinstance(instanceid[microboshinstance])
- 
+
+ try:
+	 boshInstanceId = instanceid[microboshinstance] 
+ except IndexError:
+ 	boshInstanceId = -1
+
+ if (boshInstanceId <> -1):
+ 	 print "Stopping Microbosh"	
+	 stopinstance(boshInstanceId)
+ else:
+ 	 print "Microbosh not running"	
+
  for y in range (0,numinstance):
  	for x in range(bootinstances - 1, -1,-1):
 	   if instancename[y].find(bootorder[x]) <> -1:
