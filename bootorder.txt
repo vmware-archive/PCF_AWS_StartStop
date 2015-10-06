@@ -43,3 +43,14 @@ brain-partition
 cc_bridge-partition
 cell-partition
 etcd_server-partition
+
+
+#Logsearch
+ingestor
+queue
+log_parser
+elasticsearch_autoscale
+elasticsearch_persistent
+api
+ingestor
+queue
