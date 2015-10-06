@@ -1,3 +1,4 @@
+#Core PCF
 NAT Instance
 ha_proxy-partition
 consul_server-partition
@@ -24,9 +25,21 @@ dea
 doppler
 loggregator_trafficcontroller
 cloud_controller-partition
+
+#RabbitMQ
+rabbitmq-broker-partition
+rabbitmq-haproxy-partition
+rabbitmq-server-partition
+
+#MySQL
+cf-mysql-broker-partition
+mysql_proxy-partition
+mysql-partition
+proxy-partition
+
+#Diego
 route_emitter-partition
 brain-partition
 cc_bridge-partition
 cell-partition
 etcd_server-partition
-
