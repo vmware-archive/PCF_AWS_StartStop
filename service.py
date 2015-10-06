@@ -23,7 +23,11 @@ def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
 
 def stopinstance(instanceid):
- conn.stop_instances(instance_ids=[instanceid])
+	try:
+ 		conn.stop_instances(instance_ids=[instanceid])
+	except EC2ResponseError,e:
+  		print e    
+	return "error" 
  
 def checkinstance(instanceid):
   try:
@@ -60,28 +64,34 @@ def example_1(n):
 
 def shutdown():
  numinstance = 0
+ microboshinstance = 0
  for res in reservations:
      for inst in res.instances:
             if (inst.state == "running" and inst.vpc_id == vpc_id):
+             instTagName = inst.tags['Name']
+             print "Adding instancename for shutdown:" + instTagName + " : " + inst.id 
              instanceid.append(inst.id)
-             instancename.append(inst.tags['Name'])
+             instancename.append(instTagName)
              if 'Name' in inst.tags:
-               if inst.tags['Name'].find("microbosh") <> -1:
+               if instTagName.find("microbosh") <> -1:
                 microboshinstance = numinstance
                numinstance = numinstance + 1
 
+ print "Total number of instances for shutdown:" , numinstance
  ## Microbosh should be shutdown first or you'll have things likely ressurected!
  print "Stopping Microbosh"
  stopinstance(instanceid[microboshinstance])
  
- for x in range(bootinstances - 1, -1,-1):
-      for y in range (0,numinstance):
-       if instancename[y].find(bootorder[x]) <> -1:
-        if checkinstance(instanceid[y]) == "running":
-         print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
-         stopinstance(instanceid[y])
-        break;
+ for y in range (0,numinstance):
+ 	for x in range(bootinstances - 1, -1,-1):
+	   if instancename[y].find(bootorder[x]) <> -1:
+	    if checkinstance(instanceid[y]) == "running":
+	     print "Stopping Instance: " + instanceid[y] + " : " + instancename[y]
+	     stopinstance(instanceid[y])
+	    break;
  print "Shutdown Complete!"       
+
+
 
 
 
@@ -105,8 +115,8 @@ def startup():
               routerinstances.append(inst.id) 
              numinstance = numinstance + 1
 
- for x in range(bootinstances - 1, -1,-1):
-      for y in range (0,numinstance):
+ for y in range (0,numinstance):
+      for x in range(bootinstances - 1, -1,-1):
        if instancename[y].find(bootorder[x]) <> -1:
         if checkinstance(instanceid[y]) == "stopped":
          print "Starting Instance: " + instanceid[y] + " : " + instancename[y]
@@ -168,10 +178,12 @@ with open(bootorder, "r") as boot:
   bootorder = []
   bootinstances = 0
   for line in boot:
-    bootinstances = bootinstances + 1
-    line = line.rstrip('\n')
-    bootorder.append(line)
+    if not (line.strip()=='' or line.startswith('#')):
+	    bootinstances = bootinstances + 1
+	    line = line.rstrip('\n')
+	    bootorder.append(line)
 
+print "bootorder contains:" , bootorder
 
 if option1 == "start":
  print "heading to startup"
