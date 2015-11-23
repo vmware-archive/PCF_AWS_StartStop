@@ -21,6 +21,7 @@ print option1 + ": vpc_id=" + vpc_id + " within aws_region: " + aws_region
 
 def startinstance(instanceid):
  conn.start_instances(instance_ids=[instanceid])
+ #print "Fake start:" + instanceid
 
 def stopinstance(instanceid):
 	try:
@@ -73,7 +74,7 @@ def shutdown():
              instanceid.append(inst.id)
              instancename.append(instTagName)
              if 'Name' in inst.tags:
-               if instTagName.find("microbosh") <> -1:
+               if instTagName.find("bosh") <> -1:
                 microboshinstance = numinstance
                numinstance = numinstance + 1
 
@@ -106,19 +107,23 @@ def shutdown():
 
 def startup():
  numinstance = 0
+ microboshinstance=-1
  OpsManagerInstanceId=None
  for res in reservations:
      for inst in res.instances:
             if (inst.state == "stopped" and inst.vpc_id == vpc_id):
              instanceid.append(inst.id)
-             instName = inst.tags['Name']
+             try:
+              instName = inst.tags['Name']
+             except KeyError:
+              instName = '----VM with no Name----'
              instancename.append(instName)
              print "Added instancename:instanceid: ", instName + " : " + inst.id 
-             if inst.tags['Name'].find("microbosh") <> -1:
+             if instName.find("bosh") <> -1:
               microboshinstance = numinstance
-             if inst.tags['Name'].find("Ops Manager") <> -1:
+             if instName.find("Ops Manager") <> -1:
               OpsManagerInstanceId = inst.id
-             if inst.tags['Name'].find("router") <> -1:
+             if instName.find("router") <> -1:
               print "Found a router - marking for ELB Addition..."
               routerinstance = numinstance
               routerinstances.append(inst.id) 
@@ -132,8 +137,10 @@ def startup():
          startinstance(instanceid[y])
         break;
   
- print "Starting Microbosh"
- startinstance(instanceid[microboshinstance])
+ 
+ if (microboshinstance <> -1):
+   print "Starting Microbosh"
+   startinstance(instanceid[microboshinstance])
 
  ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
  elbconn = boto.ec2.elb.connect_to_region(aws_region)
