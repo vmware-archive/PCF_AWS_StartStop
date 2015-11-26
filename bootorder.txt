@@ -32,6 +32,7 @@ rabbitmq-haproxy-partition
 rabbitmq-server-partition
 
 #MySQL
+backup-prepare-partition
 cf-mysql-broker-partition
 mysql_proxy-partition
 mysql-partition

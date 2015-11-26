@@ -16,6 +16,7 @@ if argv_len == 4:
 
 
 routerinstances = []
+braininstances = []
 
 print option1 + ": vpc_id=" + vpc_id + " within aws_region: " + aws_region
 
@@ -62,6 +63,27 @@ def example_1(n):
     sys.stdout.flush()
   print ' Done!'
   
+def adjust_loadbalancer(elbconn, load_balancer, is_ssh):
+  if is_ssh: 
+    targets = braininstances
+  else:
+    targets = routerinstances
+  elbrouterinstances = load_balancer.instances
+  print "Here's a list of %s: %s" %("brains" if	 is_ssh else "routers",  str(targets))
+  for inst in elbrouterinstances:
+   print "Removing instance: " + str(inst.id) + " from ELB: " + load_balancer.name
+   elbconn.deregister_instances(load_balancer.name,inst.id)
+
+  print "Waiting for %s to startup..." %("brains" if  is_ssh else "routers")
+  print "targets:", targets
+
+  for inst in targets:
+   instanceready = "false"
+   while (instanceready == "false"):
+    if checkinstance(inst) <> "running":
+     time.sleep(5)
+    else:
+     instanceready = "true" 
 
 def shutdown():
  numinstance = 0
@@ -101,9 +123,60 @@ def shutdown():
 	    break;
  print "Shutdown Complete!"       
 
+def fix_elb():
+ for res in reservations:
+     for inst in res.instances:
+            try:
+              instName = inst.tags['Name']
+            except KeyError:
+              instName = '----VM with no Name----'
+            if (inst.vpc_id == vpc_id):
+             if instName.find("router") <> -1:
+              print "Found a router - marking for ELB Addition..."
+              routerinstances.append(inst.id)
+             if instName.find("brain") <> -1:
+              print "Found a brain - marking for ELB Addition..."
+              braininstances.append(inst.id)
+ ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
+ elbconn = boto.ec2.elb.connect_to_region(aws_region)
+
+ ## This section assigns the elb that has a matching vpc_id
+ load_balancers = elbconn.get_all_load_balancers()
+ for elb in load_balancers:
+  if elb.vpc_id == vpc_id:
+   for listener in [y for y, v in enumerate(elb.listeners) if v[1] == 2222]:
+    ssh_load_balancer = elb
+    continue
+   for listener in [y for y, v in enumerate(elb.listeners) if v[1] == 80]:
+    load_balancer = elb
+    continue
+ if load_balancer:
+  adjust_loadbalancer(elbconn, load_balancer, False)
+ if ssh_load_balancer:
+  adjust_loadbalancer(elbconn, ssh_load_balancer, True)
+
+ ## This appears to be a reasonable amount of time for the services within the VM to startup.
+ ## Since this VM is in a private subnet inaccessible from internet there's no way to test for specific service startup
+ ## If added to early the ELB views the instance as "unhealthy" and marks it out of service
+ ## Another way to potentially check on this would be to check the state of the ELB instance (i.e. InService or OutOfService) and remove/add with delay until InService
+
+ print 'Waiting ',
+ example_1(130)
 
 
+ if load_balancer:
+  for inst in routerinstances:
+   print "Adding instance: " + inst + " to ELB: " + load_balancer.name
+   elbconn.register_instances(load_balancer.name,inst)
+ else:
+  print "Warning, no HTTP/HTTPS load balancer found!"
 
+ if ssh_load_balancer:
+  for inst in braininstances:
+   print "Adding instance: " + inst + " to ELB: " + ssh_load_balancer.name
+   elbconn.register_instances(ssh_load_balancer.name,inst)
+ else:
+  print "Warning, no SSH load balancer found!"
 
 def startup():
  numinstance = 0
@@ -123,10 +196,6 @@ def startup():
               microboshinstance = numinstance
              if instName.find("Ops Manager") <> -1:
               OpsManagerInstanceId = inst.id
-             if instName.find("router") <> -1:
-              print "Found a router - marking for ELB Addition..."
-              routerinstance = numinstance
-              routerinstances.append(inst.id) 
              numinstance = numinstance + 1
 
  for y in range (0,numinstance):
@@ -142,44 +211,8 @@ def startup():
    print "Starting Microbosh"
    startinstance(instanceid[microboshinstance])
 
- ## Since the Router has restarted we need to Remove and Add the router to the existing ELB.
- elbconn = boto.ec2.elb.connect_to_region(aws_region)
+ fix_elb()
 
- ## This section assigns the elb that has a matching vpc_id
- load_balancers = elbconn.get_all_load_balancers()
- for elb in load_balancers:
-  if elb.vpc_id == vpc_id:
-   load_balancer = elb
- elbrouterinstances = load_balancer.instances
- print "Here's a list of routers: " + str(routerinstances)
- for inst in elbrouterinstances:
-  print "Removing instance: " + str(inst.id) + " from ELB: " + load_balancer.name
-  elbconn.deregister_instances(load_balancer.name,inst.id)
- 
- print "Waiting for router to startup..."
- print "routerinstances:", routerinstances
-
- for inst in routerinstances:
-  instanceready = "false"
-  while (instanceready == "false"):
-   if checkinstance(inst) <> "running":
-    time.sleep(5)
-   else:
-    instanceready = "true"
-
- ## This appears to be a reasonable amount of time for the services within the VM to startup.  
- ## Since this VM is in a private subnet inaccessible from internet there's no way to test for specific service startup
- ## If added to early the ELB views the instance as "unhealthy" and marks it out of service
- ## Another way to potentially check on this would be to check the state of the ELB instance (i.e. InService or OutOfService) and remove/add with delay until InService
-
- print 'Waiting ',
- example_1(130)
-
-
-
- for inst in routerinstances:
-  print "Adding instance: " + inst + " to ELB: " + load_balancer.name
-  elbconn.register_instances(load_balancer.name,inst)
  print "Startup Complete!"
  print "Ops Manager Public DNS: http://" + getpublicdns(OpsManagerInstanceId)
 
@@ -207,3 +240,6 @@ if option1 == "start":
 if option1 == "stop":
  print "heading to shutdown"
  shutdown();
+if option1 == "elb":
+ print "heading to Fix ELB"
+ fix_elb();
