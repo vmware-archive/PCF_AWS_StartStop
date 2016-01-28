@@ -142,6 +142,8 @@ def fix_elb():
 
  ## This section assigns the elb that has a matching vpc_id
  load_balancers = elbconn.get_all_load_balancers()
+ ssh_load_balancer = None
+ load_balancer = None
  for elb in load_balancers:
   if elb.vpc_id == vpc_id:
    for listener in [y for y, v in enumerate(elb.listeners) if v[1] == 2222]:

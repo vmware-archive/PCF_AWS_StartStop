@@ -39,17 +39,29 @@ mysql-partition
 proxy-partition
 
 #Diego
-route_emitter-partition
 brain-partition
-cc_bridge-partition
 cell-partition
-etcd_server-partition
+diego_database-partition
 
+#Ops Metrics
+maximus
+opentsdb-firehose
+
+#Jenkins
+jenkins_master
+jenkins_slave
+
+#Gemfire ssc
+ssc-gemfire-locator
+ssc-gemfire-server
+ssc-gemfire-broker
 
 #Logsearch
 ingestor
 queue
 log_parser
+elasticsearch_data
+elasticsearch_master
 elasticsearch_autoscale
 elasticsearch_persistent
 api
