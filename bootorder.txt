@@ -47,6 +47,15 @@ diego_database-partition
 maximus
 opentsdb-firehose
 
+#PCF Metrics
+zookeeper-partition
+kafka-partition
+networkimds-partition
+containerimds-partition
+appeventimds-partition
+elasticsearch_master-partition
+elasticsearch_data-partition
+
 #Jenkins
 jenkins_master
 jenkins_slave
